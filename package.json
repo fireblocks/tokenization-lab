@@ -1,29 +1,49 @@
 {
-  "name": "@examples/next-minimal",
-  "version": "10.10.0",
+  "name": "token-hub",
+  "description": "Fireblocks NYC Roadshow Tokenization Lab",
+  "version": "0.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "lint": "eslint --ext \".js,.ts,.tsx\" --report-unused-disable-directives src",
+    "lint": "next lint --ext \".js,.ts,.tsx\" --report-unused-disable-directives warn",
     "start": "next start"
   },
   "dependencies": {
-    "@tanstack/react-query": "^4.3.8",
+    "@fireblocks/fireblocks-web3-provider": "^1.1.1",
+    "@headlessui/react": "^1.7.10",
+    "@heroicons/react": "^2.0.15",
+    "@hookform/resolvers": "^2.9.11",
+    "@next/font": "^13.1.6",
+    "@openzeppelin/contracts": "^4.8.1",
+    "@tanstack/react-query": "^4.24.4",
     "@trpc/client": "^10.10.0",
     "@trpc/next": "^10.10.0",
     "@trpc/react-query": "^10.10.0",
     "@trpc/server": "^10.10.0",
-    "next": "^13.0.0",
+    "clsx": "^1.2.1",
+    "ethers": "^6.0.2",
+    "fireblocks-sdk": "^3.1.4",
+    "next": "^13.1.6",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "zod": "^3.0.0"
+    "react-hook-form": "^7.43.1",
+    "solc": "^0.8.18",
+    "zod": "^3.20.6"
   },
   "devDependencies": {
-    "@types/node": "^18.7.20",
-    "@types/react": "^18.0.9",
-    "@types/react-dom": "^18.0.5",
-    "eslint": "^8.30.0",
-    "typescript": "^4.8.3"
+    "@tailwindcss/forms": "^0.5.3",
+    "@types/node": "^18.13.0",
+    "@types/react": "^18.0.27",
+    "@types/react-dom": "^18.0.10",
+    "autoprefixer": "^10.4.13",
+    "eslint": "^8.33.0",
+    "eslint-config-next": "13.1.6",
+    "eslint-config-prettier": "^8.6.0",
+    "postcss": "^8.4.21",
+    "prettier": "^2.8.4",
+    "prettier-plugin-tailwindcss": "^0.2.2",
+    "tailwindcss": "^3.2.6",
+    "typescript": "^4.9.5"
   }
 }

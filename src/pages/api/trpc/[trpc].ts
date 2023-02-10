@@ -1,38 +1,87 @@
-/**
- * This is the API-handler of your app that contains all your API routes.
- * On a bigger app, you will probably want to split this file up into multiple files.
- */
-import * as trpcNext from '@trpc/server/adapters/next';
-import { z } from 'zod';
-import { publicProcedure, router } from '~/server/trpc';
+import { VaultAccountResponse } from "fireblocks-sdk";
+import * as trpcNext from "@trpc/server/adapters/next";
+import { publicProcedure, router } from "~/server/trpc";
+import { getFireblocks } from "~/server/fireblocks";
+import { deploy } from "~/server/crypto/deploy";
+import { mint } from "~/server/crypto/mint";
+import { burn } from "~/server/crypto/burn";
+import {
+  authRequestSchema,
+  accountsForAssetRequestSchema,
+  addressRequestSchema,
+  deployRequestSchema,
+  mintRequestSchema,
+  burnRequestSchema,
+} from "~/lib/schemas";
 
 const appRouter = router({
-  greeting: publicProcedure
-    // This is the input schema of your procedure
-    // 💡 Tip: Try changing this and see type errors on the client straight away
-    .input(
-      z.object({
-        name: z.string().nullish(),
-      }),
-    )
-    .query(({ input }) => {
-      // This is what you're returning to your client
-      return {
-        text: `hello ${input?.name ?? 'world'}`,
-        // 💡 Tip: Try adding a new property here and see it propagate to the client straight-away
-      };
+  assets: publicProcedure.input(authRequestSchema).query(async ({ input }) => {
+    const fireblocks = await getFireblocks(input.apiKey);
+
+    const assets = await fireblocks.getVaultAssetsBalance({});
+
+    return assets;
+  }),
+  accountsForAsset: publicProcedure
+    .input(accountsForAssetRequestSchema)
+    .query(async ({ input }) => {
+      const fireblocks = await getFireblocks(input.apiKey);
+
+      const accounts: VaultAccountResponse[] = [];
+
+      let after: string | undefined;
+
+      while (true) {
+        const res = await fireblocks.getVaultAccountsWithPageInfo({
+          assetId: input.assetId,
+          minAmountThreshold: 0.00001,
+          after,
+        });
+
+        accounts.push(...res.accounts);
+
+        after = res.paging?.after;
+
+        if (!after || !res.accounts.length) {
+          break;
+        }
+      }
+
+      if (!accounts.length) {
+        throw new Error(
+          `No vault accounts found having asset ${input.assetId}`
+        );
+      }
+
+      return accounts;
     }),
-  // 💡 Tip: Try adding a new procedure here and see if you can use it in the client!
-  // getUser: publicProcedure.query(() => {
-  //   return { id: '1', name: 'bob' };
-  // }),
+  address: publicProcedure
+    .input(addressRequestSchema)
+    .query(async ({ input }) => {
+      const fireblocks = await getFireblocks(input.apiKey);
+
+      const addresses = await fireblocks.getDepositAddresses(
+        String(input.accountId),
+        input.assetId
+      );
+
+      const permanentAddress = addresses.find((a) => a.type === "Permanent");
+
+      return permanentAddress?.address;
+    }),
+  deploy: publicProcedure
+    .input(deployRequestSchema)
+    .mutation(async ({ input }) => deploy(input)),
+  mint: publicProcedure
+    .input(mintRequestSchema)
+    .mutation(async ({ input }) => mint(input)),
+  burn: publicProcedure
+    .input(burnRequestSchema)
+    .mutation(async ({ input }) => burn(input)),
 });
 
-// export only the type definition of the API
-// None of the actual implementation is exposed to the client
 export type AppRouter = typeof appRouter;
 
-// export API handler
 export default trpcNext.createNextApiHandler({
   router: appRouter,
   createContext: () => ({}),

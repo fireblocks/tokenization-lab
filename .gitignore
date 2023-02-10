@@ -18,6 +18,9 @@
 # misc
 .DS_Store
 *.pem
+*.key
+!*.pub.pem
+!*.pub.key
 
 # debug
 npm-debug.log*
@@ -30,3 +33,7 @@ yarn-error.log*
 
 # vercel
 .vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts

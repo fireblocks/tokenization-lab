@@ -1,36 +1,177 @@
-/**
- * This is a Next.js page.
- */
-import { trpc } from '../utils/trpc';
+import { useRouter } from "next/router";
+import { useState, useMemo } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { authRequestSchema, AuthRequest } from "~/lib/schemas";
+import { trpc } from "~/utils/trpc";
+import { useGlobalContext } from "~/context/Global";
+import { Form } from "~/components/Form";
+import { Input } from "~/components/Input";
+import { Select } from "~/components/Select";
+import { AssetId, assets, getAssetName } from "~/lib/assets";
 
-export default function IndexPage() {
-  // 💡 Tip: CMD+Click (or CTRL+Click) on `greeting` to go to the server definition
-  const result = trpc.greeting.useQuery({ name: 'client' });
+const Index = () => {
+  const router = useRouter();
 
-  if (!result.data) {
-    return (
-      <div style={styles}>
-        <h1>Loading...</h1>
-      </div>
-    );
-  }
-  return (
-    <div style={styles}>
-      {/**
-       * The type is defined and can be autocompleted
-       * 💡 Tip: Hover over `data` to see the result type
-       * 💡 Tip: CMD+Click (or CTRL+Click) on `text` to go to the server definition
-       * 💡 Tip: Secondary click on `text` and "Rename Symbol" to rename it both on the client & server
-       */}
-      <h1>{result.data.text}</h1>
-    </div>
+  const {
+    assetId,
+    apiKey: defaultApiKey,
+    account,
+    setAssetId,
+    setApiKey,
+    setAccount,
+  } = useGlobalContext();
+
+  const [tmpAccountId, setTmpAccountId] = useState<number | null>(null);
+
+  const {
+    register,
+    watch,
+    handleSubmit,
+    formState: { errors, isSubmitSuccessful },
+  } = useForm<AuthRequest>({
+    resolver: zodResolver(authRequestSchema),
+    defaultValues: { apiKey: defaultApiKey || "" },
+  });
+
+  const apiKey = watch("apiKey");
+
+  const assetsQuery = trpc.assets.useQuery(
+    { apiKey },
+    {
+      enabled: isSubmitSuccessful && !errors.apiKey,
+      onSuccess: (_assets) => setAssetId(_assets[0].id as AssetId),
+    }
   );
-}
 
-const styles = {
-  width: '100vw',
-  height: '100vh',
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
+  const assetOptions = useMemo(() => {
+    if (!assetsQuery.data) {
+      return [];
+    }
+
+    return assetsQuery.data
+      .filter((asset) =>
+        assets.some((a) => a.id === asset.id && !!parseFloat(asset.total))
+      )
+      .map((asset) => {
+        const name = getAssetName(asset.id as AssetId);
+
+        const balance = parseFloat(asset.total).toFixed(4);
+
+        return {
+          value: asset.id,
+          label: `${name} | Balance: ${balance}`,
+        };
+      });
+  }, [assetsQuery.data]);
+
+  const accountsForAssetQuery = trpc.accountsForAsset.useQuery(
+    { apiKey, assetId },
+    {
+      enabled: !!assetOptions.length,
+      onSuccess: (_accounts) => setTmpAccountId(parseInt(_accounts[0].id)),
+    }
+  );
+
+  const accountsForAsset = accountsForAssetQuery.data;
+
+  const accountsForAssetOptions = useMemo(() => {
+    if (!accountsForAsset) {
+      return [];
+    }
+
+    return accountsForAsset.map((account) => ({
+      value: account.id,
+      label: account.name,
+    }));
+  }, [accountsForAsset]);
+
+  const addressQuery = trpc.address.useQuery(
+    { apiKey, assetId, accountId: tmpAccountId as number },
+    {
+      enabled: !!accountsForAssetOptions.length,
+      onSuccess: (address) => {
+        const selectedAsset = assetsQuery.data?.find((a) => a.id === assetId);
+
+        const selectedAccount = accountsForAsset?.find(
+          (a) => parseInt(a.id) === tmpAccountId
+        );
+
+        if (!selectedAsset || !selectedAccount) {
+          return;
+        }
+
+        const _account = {
+          id: tmpAccountId as number,
+          name: selectedAccount.name,
+          address: address,
+          balances: {
+            baseAsset: parseFloat(selectedAsset.total),
+            token: 0,
+          },
+        };
+
+        setAccount(_account);
+      },
+    }
+  );
+
+  const onSubmit = async (formData: AuthRequest) => setApiKey(formData.apiKey);
+
+  return (
+    <>
+      <Form
+        title="Fireblocks API"
+        description="Configure access to Fireblocks with an API user."
+        submitLabel="Log In"
+        onSubmit={handleSubmit(onSubmit)}
+      >
+        <Input
+          className="col-span-6"
+          label="API Key"
+          error={errors.apiKey?.message}
+          inputProps={{
+            ...register("apiKey"),
+            type: "text",
+            placeholder: "00000000-0000-0000-0000-000000000000",
+            className: "font-mono",
+          }}
+        />
+      </Form>
+      <div className="grid grid-cols-2 gap-6">
+        <Form
+          title="EVM Network"
+          description="Choose a blockchain."
+          disabled={!assetOptions.length}
+        >
+          <Select
+            className="col-span-6"
+            label="Network"
+            options={assetOptions}
+            inputProps={{
+              value: assetId || "ETH_TEST3",
+              onChange: (e) => setAssetId(e.target.value as AssetId),
+            }}
+          />
+        </Form>
+        <Form
+          title="Vault Account"
+          description="Choose a vault account."
+          disabled={!accountsForAssetOptions.length}
+        >
+          <Select
+            className="col-span-6"
+            label="Vault Account"
+            options={accountsForAssetOptions}
+            inputProps={{
+              value: (tmpAccountId || account?.id || "0").toString(),
+              onChange: (e) => setTmpAccountId(parseInt(e.target.value)),
+            }}
+          />
+        </Form>
+      </div>
+    </>
+  );
 };
+
+export default Index;
