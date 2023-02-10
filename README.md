@@ -1,4 +1,4 @@
-# Token Hub
+# Fireblocks Tokenization Lab
 
 Fireblocks NYC Roadshow Tokenization Lab
 

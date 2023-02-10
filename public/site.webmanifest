@@ -1,6 +1,6 @@
 {
-  "name": "Token Hub",
-  "short_name": "Token Hub",
+  "name": "Fireblocks Tokenization Lab",
+  "short_name": "Tokenization Lab",
   "description": "Fireblocks NYC Roadshow Tokenization Lab",
   "start_url": "/",
   "display": "standalone",
