@@ -18,7 +18,14 @@ Deploy, mint, and burn an ERC-20 token
 
 ## 🔐 Authentication
 
-This lab uses the Fireblocks API, and you will need an API key and API private key. Place your API private key within the repository at `keys/api.key`. This file will be ignored by Git.
+This lab uses the Fireblocks API and requires an API key and API private key. You'll set your API key in the browser, and there's two ways you can set your API private key:
+
+1. Place your API private key within the repository at `keys/api.key`. This file will be ignored by Git.
+2. Set the `PRIVATE_KEY_B64` environment variable to a base64 encoding of your API private key. You can get a base64 version of your private key with:
+
+   ```bash
+   base64 -i keys/api.key
+   ```
 
 ## 🔨 Development
 
