@@ -1,5 +1,4 @@
 import { useRouter } from "next/router";
-import { Inter } from "@next/font/google";
 import { ReactNode, ForwardRefExoticComponent, SVGProps } from "react";
 import { clsx } from "clsx";
 import Link from "next/link";
@@ -14,8 +13,6 @@ import { getAssetName } from "~/lib/assets";
 type Props = {
   children: ReactNode;
 };
-
-const inter = Inter({ variable: "--font-inter" });
 
 export const Layout = ({ children }: Props) => {
   const { pathname } = useRouter();
@@ -51,9 +48,7 @@ export const Layout = ({ children }: Props) => {
   const assetName = getAssetName(assetId);
 
   return (
-    <div
-      className={`${inter.variable} container mx-auto font-sans sm:py-6 sm:px-6 lg:grid lg:grid-cols-12 lg:gap-x-5 lg:px-8`}
-    >
+    <div className="container mx-auto font-sans sm:py-6 sm:px-6 lg:grid lg:grid-cols-12 lg:gap-x-5 lg:px-8">
       <aside className="space-y-4 py-6 px-2 sm:px-6 lg:col-span-3 lg:py-0 lg:px-0">
         <Link
           href="/"

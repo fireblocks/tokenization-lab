@@ -14,7 +14,6 @@
     "@headlessui/react": "^1.7.10",
     "@heroicons/react": "^2.0.15",
     "@hookform/resolvers": "^2.9.11",
-    "@next/font": "^13.1.6",
     "@openzeppelin/contracts": "^4.8.1",
     "@tanstack/react-query": "^4.24.4",
     "@trpc/client": "^10.10.0",
