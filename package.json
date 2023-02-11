@@ -1,13 +1,14 @@
 {
   "name": "tokenization-lab",
-  "description": "Fireblocks NYC Roadshow Tokenization Lab",
+  "description": "Deploy, mint, and burn an ERC-20 token",
+  "author": "Fireblocks (https://www.fireblocks.com)",
   "version": "0.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "lint": "next lint --ext \".js,.ts,.tsx\" --report-unused-disable-directives warn",
-    "start": "next start"
+    "start": "next start",
+    "lint": "next lint --ext \".js,.ts,.tsx\" --report-unused-disable-directives warn"
   },
   "dependencies": {
     "@fireblocks/fireblocks-web3-provider": "^1.1.1",

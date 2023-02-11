@@ -6,7 +6,7 @@ import {
   ReactNode,
 } from "react";
 import { useRouter } from "next/router";
-import { AssetId, assetIds } from "~/lib/assets";
+import { Asset, AssetId, getAsset } from "~/lib/assets";
 import {
   Account,
   Contract,
@@ -23,19 +23,21 @@ const accountStorage = new Storage("fireblocksAccount", accountSchema);
 const contractStorage = new Storage("fireblocksContract", contractSchema);
 
 interface IGlobalContext {
-  assetId: AssetId;
+  assetId?: AssetId;
+  assetName?: Asset["name"] | AssetId;
   apiKey?: string;
   account?: Account;
   contract?: Contract;
   setAssetId: (assetId: AssetId) => void;
-  setApiKey: (apiKey: string) => void;
-  setAccount: (account: Account) => void;
-  setContract: (contract: Contract) => void;
+  setApiKey: (apiKey: string | null) => void;
+  setAccount: (account: Account | null) => void;
+  setContract: (contract: Contract | null) => void;
   reset: VoidFunction;
 }
 
 const defaultValue: IGlobalContext = {
-  assetId: "ETH_TEST3",
+  assetId: undefined,
+  assetName: undefined,
   apiKey: undefined,
   account: undefined,
   contract: undefined,
@@ -67,7 +69,7 @@ export const GlobalContextProvider = ({ children }: Props) => {
   useEffect(() => {
     setState((prev) => ({
       ...prev,
-      assetId: assetIdStorage.get(assetIds[0]),
+      assetId: assetIdStorage.get(),
       apiKey: apiKeyStorage.get(),
       account: accountStorage.get(),
       contract: contractStorage.get(),
@@ -79,31 +81,34 @@ export const GlobalContextProvider = ({ children }: Props) => {
     key: keyof IGlobalContext,
     value: T
   ) => {
-    try {
-      storage.set(value);
+    storage.set(value);
 
-      setState((prev) => ({ ...prev, [key]: value }));
-    } catch (error) {
-      console.error(error);
-    }
+    setState((prev) => ({
+      ...prev,
+      [key]: value === null ? undefined : value,
+    }));
   };
 
   const setAssetId = (assetId: AssetId) =>
     setStoredState(assetIdStorage, "assetId", assetId);
 
-  const setApiKey = (apiKey: string) =>
+  const setApiKey = (apiKey: string | null) =>
     setStoredState(apiKeyStorage, "apiKey", apiKey);
 
-  const setAccount = (account: Account) =>
+  const setAccount = (account: Account | null) =>
     setStoredState(accountStorage, "account", account);
 
-  const setContract = (contract: Contract) =>
+  const setContract = (contract: Contract | null) =>
     setStoredState(contractStorage, "contract", contract);
 
   const reset = () => setState(defaultValue);
 
+  const assetName =
+    (state.assetId && getAsset(state.assetId)?.name) || state.assetId;
+
   const value: IGlobalContext = {
     ...state,
+    assetName,
     setAssetId,
     setApiKey,
     setAccount,

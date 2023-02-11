@@ -1,10 +1,11 @@
-import { getContract } from "~/lib/contract";
 import path from "path";
 import fs from "fs";
 import solc from "solc";
-import { ContractFactory, InterfaceAbi } from "ethers";
-import { getWeb3Signer } from "./signer";
+import { ContractFactory, Contract, InterfaceAbi } from "ethers";
 import { DeployRequest } from "~/lib/schemas";
+import { getContract } from "~/lib/contract";
+import { getWeb3Provider } from "../helpers/web3";
+import { getBalances } from "../helpers/getBalances";
 
 const findImports = (relativePath: string) => {
   const absolutePath = path.resolve(
@@ -22,7 +23,7 @@ export const deploy = async ({
   premint,
   ...txInput
 }: DeployRequest) => {
-  const signer = await getWeb3Signer(txInput);
+  const { provider, signer } = await getWeb3Provider(txInput);
 
   const { solidity, contractName } = getContract({ name, symbol, premint });
 
@@ -62,5 +63,13 @@ export const deploy = async ({
 
   const contractAddress = contract.target;
 
-  return { contractAddress, abi };
+  const _contract = new Contract(contractAddress as string, abi, signer);
+
+  const balances = await getBalances(provider, _contract, signer.address);
+
+  return {
+    contractAddress,
+    abi,
+    balances,
+  };
 };

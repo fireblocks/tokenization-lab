@@ -6,7 +6,7 @@ import { GlobalContextProvider } from "~/context/Global";
 import { Layout } from "~/components/Layout";
 
 const title = "Fireblocks Tokenization Lab";
-const description = "Fireblocks NYC Roadshow Tokenization Lab";
+const description = "Deploy, mint, and burn an ERC-20 token";
 const color = "#0075F2";
 
 const App: AppType = ({ Component, pageProps }) => {

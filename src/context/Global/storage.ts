@@ -22,11 +22,17 @@ export class Storage<T = any> {
   }
 
   set(data: T) {
-    const parsedData = this.schema.parse(data);
+    try {
+      const parsedData = this.schema.parse(data);
 
-    const stringifiedData =
-      typeof parsedData === "string" ? parsedData : JSON.stringify(parsedData);
+      const stringifiedData =
+        typeof parsedData === "string"
+          ? parsedData
+          : JSON.stringify(parsedData);
 
-    localStorage.setItem(this.key, stringifiedData);
+      localStorage.setItem(this.key, stringifiedData);
+    } catch {
+      localStorage.removeItem(this.key);
+    }
   }
 }

@@ -8,7 +8,6 @@ import {
   FireIcon,
 } from "@heroicons/react/24/outline";
 import { useGlobalContext } from "~/context/Global";
-import { getAssetName } from "~/lib/assets";
 
 type Props = {
   children: ReactNode;
@@ -17,7 +16,9 @@ type Props = {
 export const Layout = ({ children }: Props) => {
   const { pathname } = useRouter();
 
-  const { apiKey, assetId, account, contract } = useGlobalContext();
+  const { apiKey, assetName, account, contract, reset } = useGlobalContext();
+
+  const accountName = account?.name || account?.id;
 
   const navItem = (
     name: string,
@@ -45,19 +46,14 @@ export const Layout = ({ children }: Props) => {
     navigation.push(navItem("Mint", PlusCircleIcon), navItem("Burn", FireIcon));
   }
 
-  const assetName = getAssetName(assetId);
-
   return (
     <div className="container mx-auto font-sans sm:py-6 sm:px-6 lg:grid lg:grid-cols-12 lg:gap-x-5 lg:px-8">
       <aside className="space-y-4 py-6 px-2 sm:px-6 lg:col-span-3 lg:py-0 lg:px-0">
-        <Link
-          href="/"
-          className="flex flex-shrink-0 items-start justify-between"
-        >
+        <div className="flex flex-shrink-0 items-center">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 26 25"
-            className="h-8 w-auto"
+            className="mr-3 h-12 w-auto"
           >
             <path
               fill="#123c66"
@@ -65,23 +61,69 @@ export const Layout = ({ children }: Props) => {
               d="M24.322 0a1 1 0 0 1 1 1v23a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1V1a1 1 0 0 1 1-1h23.322ZM12.661 6.944 5.627 18.056h14.068L12.66 6.944h.001Z"
             />
           </svg>
-          <div>
-            <h3 className="text-lg font-medium leading-6 text-gray-900">
-              Fireblocks Tokenization Lab
-            </h3>
+          <h3 className="text-lg font-medium leading-6 text-gray-900">
+            Fireblocks Tokenization Lab
+          </h3>
+        </div>
+        {!!(assetName && account) && (
+          <div className="rounded border border-gray-300 p-3">
             {!!assetName && (
-              <p className="mt-1 text-sm text-gray-500">
-                <span className="font-medium">Network</span> {assetName}
+              <p className="truncate text-sm text-gray-500">
+                <span className="font-medium text-gray-700">Network</span>{" "}
+                {assetName}
               </p>
             )}
-            {!!account && (
-              <p className="mt-1 text-sm text-gray-500">
-                <span className="font-medium">Account</span>{" "}
-                {account?.name || account?.id}
+            {!!accountName && (
+              <p className="mt-1 truncate text-sm text-gray-500">
+                <span className="font-medium text-gray-700">Account</span>{" "}
+                {accountName}
               </p>
             )}
+            {!!account.address && (
+              <p className="mt-1 truncate text-sm text-gray-500">
+                <span className="font-medium text-gray-700">Address</span>{" "}
+                <span className="font-mono">{account.address}</span>
+              </p>
+            )}
+            {!!contract?.address && (
+              <p className="mt-1 truncate text-sm text-gray-500">
+                <span className="font-medium text-gray-700">Contract</span>{" "}
+                <span className="font-mono">{contract.address}</span>
+              </p>
+            )}
+            {!!account.balances && (
+              <div className="mt-1 flex justify-between text-sm text-gray-500">
+                <span className="font-medium text-gray-700">Balance</span>
+                <div className="ml-1 flex flex-col truncate">
+                  <span className="truncate font-mono">
+                    {account.balances.native.toFixed(4)} Native
+                  </span>
+                  {!!contract && (
+                    <span className="truncate font-mono">
+                      {account.balances.token.toFixed(4)} {contract.symbol}
+                    </span>
+                  )}
+                </div>
+              </div>
+            )}
+            <hr className="my-3 border-gray-200" />
+            <div className="space-x-2">
+              <Link
+                href="/"
+                className="inline-flex items-center rounded border border-gray-300 bg-white px-2.5 py-1.5 text-xs font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              >
+                Edit
+              </Link>
+              <button
+                type="button"
+                className="inline-flex items-center rounded border border-red-300 bg-white px-2.5 py-1.5 text-xs font-medium text-red-700 shadow-sm hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+                onClick={reset}
+              >
+                Reset
+              </button>
+            </div>
           </div>
-        </Link>
+        )}
         <nav className="space-y-1">
           {navigation.map((item) => (
             <Link

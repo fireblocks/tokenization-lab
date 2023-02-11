@@ -1,13 +1,11 @@
 import path from "path";
 import fs from "fs";
 import { BrowserProvider } from "ethers";
-import {
-  FireblocksWeb3Provider,
-  ChainId,
-} from "@fireblocks/fireblocks-web3-provider";
+import { FireblocksWeb3Provider } from "@fireblocks/fireblocks-web3-provider";
 import { TransactionRequest } from "~/lib/schemas";
+import { getAsset } from "~/lib/assets";
 
-export const getWeb3Signer = async ({
+export const getWeb3Provider = async ({
   apiKey,
   assetId,
   account,
@@ -16,14 +14,13 @@ export const getWeb3Signer = async ({
 
   const privateKey = await fs.promises.readFile(privateKeyPath, "utf-8");
 
-  let chainId: ChainId;
+  const asset = getAsset(assetId);
 
-  switch (assetId) {
-    default:
-    case "ETH_TEST3":
-      chainId = ChainId.GOERLI;
-      break;
+  if (!asset) {
+    throw new Error(`Asset ${assetId} not found`);
   }
+
+  const chainId = asset.chainId;
 
   const eip1193Provider = new FireblocksWeb3Provider({
     privateKey,
@@ -36,5 +33,5 @@ export const getWeb3Signer = async ({
 
   const signer = await provider.getSigner(account.address);
 
-  return signer;
+  return { provider, signer };
 };

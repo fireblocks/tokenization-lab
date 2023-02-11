@@ -1,30 +1,29 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { deployRequestSchema, DeployRequest } from "~/lib/schemas";
+import { deployRequestSchema, DeployRequest, Account } from "~/lib/schemas";
 import { trpc } from "~/utils/trpc";
-import { getAssetName } from "~/lib/assets";
 import { getContract } from "~/lib/contract";
 import { useGlobalContext } from "~/context/Global";
 import { Form } from "~/components/Form";
 import { Input } from "~/components/Input";
 
+const hiddenInputs = [
+  "assetId",
+  "apiKey",
+  "account.address",
+  "account.id",
+] as const;
+
 const Deploy = () => {
   const {
     assetId,
+    assetName,
     apiKey,
     account,
     contract: contractInfo,
+    setAccount,
     setContract,
   } = useGlobalContext();
-
-  const assetName = getAssetName(assetId);
-
-  const deployMutation = trpc.deploy.useMutation({
-    // variables: {},
-    // onMutate,
-    // onSuccess,
-    // onError,
-  });
 
   const {
     register,
@@ -45,36 +44,37 @@ const Deploy = () => {
 
   const { name, symbol, premint } = watch();
 
-  const contract = getContract({ name, symbol, premint });
-
-  const onSubmit = async (formData: DeployRequest) => {
-    try {
-      const { abi, contractAddress } = await deployMutation.mutateAsync(
-        formData
-      );
+  const deployMutation = trpc.deploy.useMutation({
+    onSuccess: ({ abi, contractAddress, balances }) => {
+      setAccount({
+        ...(account as Account),
+        balances,
+      });
 
       setContract({
-        name: formData.name,
-        symbol: formData.symbol,
+        name,
+        symbol,
         abi: abi as any[],
         address: contractAddress as string,
       });
-    } catch (error) {
-      console.error(error);
-    }
-  };
+    },
+  });
+
+  const contract = getContract({ name, symbol, premint });
+
+  const onSubmit = (formData: DeployRequest) => deployMutation.mutate(formData);
 
   return (
     <Form
       title="Deploy Token"
       description={`Deploy an ERC-20 token contract to the ${assetName} blockchain.`}
       submitLabel="Deploy"
+      disabled={deployMutation.isLoading}
       onSubmit={handleSubmit(onSubmit)}
     >
-      <input type="hidden" {...register("assetId")} />
-      <input type="hidden" {...register("apiKey")} />
-      <input type="hidden" {...register("account.address")} />
-      <input type="hidden" {...register("account.id")} />
+      {hiddenInputs.map((key) => (
+        <input key={key} type="hidden" {...register(key)} />
+      ))}
       <Input
         className="col-span-4"
         label="Name"

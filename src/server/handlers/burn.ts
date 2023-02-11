@@ -1,13 +1,14 @@
 import { parseEther, Contract, ContractTransactionResponse } from "ethers";
 import { BurnRequest } from "~/lib/schemas";
-import { getWeb3Signer } from "./signer";
+import { getWeb3Provider } from "../helpers/web3";
+import { getBalances } from "../helpers/getBalances";
 
 export const burn = async ({
   contract: contractInfo,
   amount,
   ...txInput
 }: BurnRequest) => {
-  const signer = await getWeb3Signer(txInput);
+  const { provider, signer } = await getWeb3Provider(txInput);
 
   const contract = new Contract(contractInfo.address, contractInfo.abi, signer);
 
@@ -15,12 +16,14 @@ export const burn = async ({
 
   const tx = (await contract.burn(wei)) as ContractTransactionResponse;
 
-  //   const tx = (await contract.burnFrom(
-  //     account,
-  //     wei
-  //   )) as ContractTransactionResponse;
+  // const tx = (await contract.burnFrom(
+  //   account,
+  //   wei
+  // )) as ContractTransactionResponse;
 
   await tx.wait();
 
-  return tx.hash;
+  const balances = await getBalances(provider, contract, signer.address);
+
+  return { hash: tx.hash, balances };
 };
