@@ -1,24 +1,3 @@
-// import {assetI}
-// export type AssetId = (typeof assetIds)[number];
-
-// const STORAGE_KEY = "fireblocksAssetId";
-
-// const isAssetId = (assetId: string | null): assetId is AssetId =>
-//   assetIds.includes(assetId as AssetId);
-
-// export const getAssetId = () => {
-//   const assetId = localStorage.getItem(STORAGE_KEY);
-
-//   if (isAssetId(assetId)) {
-//     return assetId;
-//   }
-
-//   return assetIds[0];
-// };
-
-// export const setAssetId = (assetId: AssetId) =>
-//   localStorage.setItem(STORAGE_KEY, assetId);
-
 import { z } from "zod";
 
 export class Storage<T = any> {

@@ -80,11 +80,17 @@ const Index = () => {
       return [];
     }
 
-    return accountsForAsset.map((account) => ({
-      value: account.id,
-      label: account.name,
-    }));
-  }, [accountsForAsset]);
+    return accountsForAsset.map((account) => {
+      const balanceStr = account.assets?.find((a) => a.id === assetId)?.total;
+
+      const balance = balanceStr ? parseFloat(balanceStr).toFixed(4) : 0;
+
+      return {
+        value: account.id,
+        label: `${account.name} | Balance: ${balance}`,
+      };
+    });
+  }, [assetId, accountsForAsset]);
 
   const addressQuery = trpc.address.useQuery(
     { apiKey, assetId, accountId: tmpAccountId as number },
