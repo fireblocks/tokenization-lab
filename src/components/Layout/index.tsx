@@ -8,6 +8,7 @@ import {
   FireIcon,
 } from "@heroicons/react/24/outline";
 import { useGlobalContext } from "~/context/Global";
+import { getAsset } from "~/lib/assets";
 
 type Props = {
   children: ReactNode;
@@ -16,9 +17,33 @@ type Props = {
 export const Layout = ({ children }: Props) => {
   const { pathname } = useRouter();
 
-  const { apiKey, assetName, account, contract, reset } = useGlobalContext();
+  const { apiKey, assetId, assetName, account, contract, reset } =
+    useGlobalContext();
 
   const accountName = account?.name || account?.id;
+
+  const asset = assetId ? getAsset(assetId) : null;
+
+  const assetExplorer = asset?.explorer;
+
+  const accountAddress = account?.address;
+
+  const tokenAddress = contract?.address;
+
+  const accountExplorer =
+    assetExplorer && accountAddress
+      ? `https://${assetExplorer}/address/${accountAddress}`
+      : null;
+
+  const tokenExplorer =
+    assetExplorer && tokenAddress
+      ? `https://${assetExplorer}/token/${tokenAddress}`
+      : null;
+
+  const tokenBalanceExplorer =
+    assetExplorer && accountAddress && tokenAddress
+      ? `https://${assetExplorer}/token/${tokenAddress}?a=${accountAddress}`
+      : null;
 
   const navItem = (
     name: string,
@@ -70,38 +95,62 @@ export const Layout = ({ children }: Props) => {
             {!!assetName && (
               <p className="truncate text-sm text-gray-500">
                 <span className="font-medium text-gray-700">Network</span>{" "}
-                {assetName}
+                <span>{assetName}</span>
               </p>
             )}
             {!!accountName && (
               <p className="mt-1 truncate text-sm text-gray-500">
                 <span className="font-medium text-gray-700">Account</span>{" "}
-                {accountName}
+                <span>{accountName}</span>
               </p>
             )}
-            {!!account.address && (
+            {!!accountAddress && (
               <p className="mt-1 truncate text-sm text-gray-500">
                 <span className="font-medium text-gray-700">Address</span>{" "}
-                <span className="font-mono">{account.address}</span>
+                <a
+                  className="font-mono text-blue-500 hover:text-blue-700"
+                  href={accountExplorer ?? "#"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {accountAddress}
+                </a>
               </p>
             )}
-            {!!contract?.address && (
+            {!!tokenAddress && (
               <p className="mt-1 truncate text-sm text-gray-500">
                 <span className="font-medium text-gray-700">Contract</span>{" "}
-                <span className="font-mono">{contract.address}</span>
+                <a
+                  className="font-mono text-blue-500 hover:text-blue-700"
+                  href={tokenExplorer ?? "#"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {tokenAddress}
+                </a>
               </p>
             )}
             {!!account.balances && (
               <div className="mt-1 flex justify-between text-sm text-gray-500">
-                <span className="font-medium text-gray-700">Balance</span>
-                <div className="ml-1 flex flex-col truncate">
-                  <span className="truncate font-mono">
+                <span className="font-medium text-gray-700">Balances</span>
+                <div className="ml-1 flex flex-col truncate text-right">
+                  <a
+                    className="truncate font-mono text-blue-500 hover:text-blue-700"
+                    href={accountExplorer ?? "#"}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     {account.balances.native.toFixed(4)} Native
-                  </span>
+                  </a>
                   {!!contract && (
-                    <span className="truncate font-mono">
+                    <a
+                      className="mt-1 truncate font-mono text-blue-500 hover:text-blue-700"
+                      href={tokenBalanceExplorer ?? "#"}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       {account.balances.token.toFixed(4)} {contract.symbol}
-                    </span>
+                    </a>
                   )}
                 </div>
               </div>
