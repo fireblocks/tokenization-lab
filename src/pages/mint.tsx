@@ -66,7 +66,7 @@ const Mint = () => {
           type: "number",
           placeholder: "1000000",
           min: 0,
-          max: Number.MAX_VALUE,
+          max: 2 ** 53,
         }}
       />
     </Form>

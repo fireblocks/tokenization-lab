@@ -199,7 +199,17 @@ const Index = () => {
             options={assetOptions}
             inputProps={{
               value: assetId ?? "",
-              onChange: (e) => setAssetId(e.target.value as AssetId),
+              onChange: (e) => {
+                const _assetId = e.target.value as AssetId;
+
+                if (typeof _assetId === "string") {
+                  setAssetId(_assetId);
+
+                  if (assetId !== _assetId) {
+                    resetWalletData();
+                  }
+                }
+              },
             }}
           />
         </Form>
@@ -215,10 +225,14 @@ const Index = () => {
             inputProps={{
               value: ((tmpAccountId || account?.id) ?? "").toString(),
               onChange: (e) => {
-                setTmpAccountId(parseInt(e.target.value));
+                const _accountId = parseInt(e.target.value);
 
-                if (account?.id !== parseInt(e.target.value)) {
-                  setContract(null);
+                if (typeof _accountId === "number") {
+                  setTmpAccountId(_accountId);
+
+                  if (account?.id !== _accountId) {
+                    setContract(null);
+                  }
                 }
               },
             }}

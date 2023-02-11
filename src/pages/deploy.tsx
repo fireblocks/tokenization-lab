@@ -106,7 +106,7 @@ const Deploy = () => {
           type: "number",
           placeholder: "1000000",
           min: 0,
-          max: Number.MAX_VALUE,
+          max: 2 ** 53,
         }}
       />
       <div className="col-span-6">

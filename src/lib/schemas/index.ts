@@ -78,8 +78,9 @@ const buildContractSchema = tokenMetadataSchema.merge(
   z.object({
     premint: z
       .number({ coerce: true })
+      .int("Premint must be an integer")
       .nonnegative("Premint must not be negative")
-      .max(Number.MAX_VALUE, "Premint too large"),
+      .max(2 ** 53, "Premint too large"),
   })
 );
 

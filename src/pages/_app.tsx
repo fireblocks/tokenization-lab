@@ -7,7 +7,7 @@ import { Layout } from "~/components/Layout";
 
 const title = "Fireblocks Tokenization Lab";
 const description = "Deploy, mint, and burn an ERC-20 token";
-const color = "#0075F2";
+const color = "#F5F5F5";
 
 const App: AppType = ({ Component, pageProps }) => {
   return (

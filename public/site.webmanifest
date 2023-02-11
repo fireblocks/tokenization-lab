@@ -1,12 +1,12 @@
 {
   "name": "Fireblocks Tokenization Lab",
   "short_name": "Tokenization Lab",
-  "description": "Fireblocks NYC Roadshow Tokenization Lab",
+  "description": "Deploy, mint, and burn an ERC-20 token",
   "start_url": "/",
   "display": "standalone",
   "orientation": "portrait",
-  "theme_color": "#0075F2",
-  "background_color": "#F6F6F6",
+  "theme_color": "#F5F5F5",
+  "background_color": "#F5F5F5",
   "icons": [
     {
       "src": "/icons/favicon-32x32.png",

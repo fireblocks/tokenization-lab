@@ -21,4 +21,4 @@ export const accountIdSchema = z
 export const amountSchema = z
   .number()
   .positive("Amount must be positive")
-  .max(Number.MAX_VALUE, "Amount too large");
+  .max(2 ** 53, "Amount too large");
