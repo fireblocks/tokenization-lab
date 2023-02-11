@@ -2,7 +2,7 @@
 
 Deploy an ERC-20 token contract, mint, and burn.
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/Burry/tokenization-lab)
+[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/fork/github/Burry/tokenization-lab)
 
 ## Development
 
