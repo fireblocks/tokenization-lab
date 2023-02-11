@@ -1,7 +1,11 @@
 import { z } from "zod";
 
 export class Storage<T = any> {
-  constructor(private key: string, private schema: z.Schema<T>) {}
+  private key: string;
+
+  constructor(key: string, private schema: z.Schema<T>) {
+    this.key = `fireblocks:${key}`;
+  }
 
   get<U extends T | undefined>(fallback?: U): T | U {
     try {
@@ -34,5 +38,9 @@ export class Storage<T = any> {
     } catch {
       localStorage.removeItem(this.key);
     }
+  }
+
+  delete() {
+    localStorage.removeItem(this.key);
   }
 }

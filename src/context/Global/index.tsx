@@ -17,10 +17,10 @@ import {
 } from "~/lib/schemas";
 import { Storage } from "./storage";
 
-const assetIdStorage = new Storage("fireblocksAssetId", assetIdSchema);
-const apiKeyStorage = new Storage("fireblocksApiKey", apiKeySchema);
-const accountStorage = new Storage("fireblocksAccount", accountSchema);
-const contractStorage = new Storage("fireblocksContract", contractSchema);
+const assetIdStorage = new Storage("AssetId", assetIdSchema);
+const apiKeyStorage = new Storage("ApiKey", apiKeySchema);
+const accountStorage = new Storage("Account", accountSchema);
+const contractStorage = new Storage("Contract", contractSchema);
 
 interface IGlobalContext {
   assetId?: AssetId;
@@ -32,7 +32,7 @@ interface IGlobalContext {
   setApiKey: (apiKey: string | null) => void;
   setAccount: (account: Account | null) => void;
   setContract: (contract: Contract | null) => void;
-  reset: VoidFunction;
+  resetContext: VoidFunction;
 }
 
 const defaultValue: IGlobalContext = {
@@ -45,7 +45,7 @@ const defaultValue: IGlobalContext = {
   setApiKey: () => undefined,
   setAccount: () => undefined,
   setContract: () => undefined,
-  reset: () => undefined,
+  resetContext: () => undefined,
 };
 
 const Context = createContext(defaultValue);
@@ -101,7 +101,13 @@ export const GlobalContextProvider = ({ children }: Props) => {
   const setContract = (contract: Contract | null) =>
     setStoredState(contractStorage, "contract", contract);
 
-  const reset = () => setState(defaultValue);
+  const resetContext = () => {
+    assetIdStorage.delete();
+    apiKeyStorage.delete();
+    accountStorage.delete();
+    contractStorage.delete();
+    setState(defaultValue);
+  };
 
   const assetName =
     (state.assetId && getAsset(state.assetId)?.name) || state.assetId;
@@ -113,7 +119,7 @@ export const GlobalContextProvider = ({ children }: Props) => {
     setApiKey,
     setAccount,
     setContract,
-    reset,
+    resetContext,
   };
 
   return <Context.Provider value={value}>{children}</Context.Provider>;

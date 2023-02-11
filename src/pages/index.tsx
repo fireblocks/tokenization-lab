@@ -22,6 +22,7 @@ const Index = () => {
     setApiKey,
     setAccount,
     setContract,
+    resetContext,
   } = useGlobalContext();
 
   const [tmpApiKey, setTmpApiKey] = useState(defaultApiKey || null);
@@ -174,6 +175,18 @@ const Index = () => {
         submitLabel="Log In"
         disabled={assetsMutation.isLoading}
         onSubmit={handleSubmit(onSubmitApiKey)}
+        actions={
+          <button
+            type="button"
+            className="inline-flex justify-center rounded-md border border-red-300 bg-white py-2 px-4 text-sm font-medium text-red-700 shadow-sm hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+            onClick={() => {
+              reset({ apiKey: "" });
+              resetContext();
+            }}
+          >
+            Reset
+          </button>
+        }
       >
         <Input
           className="col-span-6"

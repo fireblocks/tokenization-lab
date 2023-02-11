@@ -1,7 +1,8 @@
-import { FormHTMLAttributes } from "react";
+import { FormHTMLAttributes, ReactNode } from "react";
 import { clsx } from "clsx";
 
 type Props = FormHTMLAttributes<HTMLFormElement> & {
+  actions?: ReactNode;
   title: string;
   description: string;
   submitLabel?: string;
@@ -10,6 +11,7 @@ type Props = FormHTMLAttributes<HTMLFormElement> & {
 
 export const Form = ({
   children,
+  actions,
   className,
   title,
   description,
@@ -38,7 +40,8 @@ export const Form = ({
         <div className="grid grid-cols-6 gap-6">{children}</div>
       </div>
       {!!onSubmit && (
-        <div className="bg-gray-50 px-4 py-3 text-right sm:px-6">
+        <div className="space-x-3 bg-gray-50 px-4 py-3 text-right sm:px-6">
+          {actions}
           <button
             type="submit"
             className="inline-flex justify-center rounded-md border border-transparent bg-blue-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"

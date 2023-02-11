@@ -17,8 +17,7 @@ type Props = {
 export const Layout = ({ children }: Props) => {
   const { pathname } = useRouter();
 
-  const { apiKey, assetId, assetName, account, contract, reset } =
-    useGlobalContext();
+  const { apiKey, assetId, assetName, account, contract } = useGlobalContext();
 
   const accountName = account?.name || account?.id;
 
@@ -154,21 +153,13 @@ export const Layout = ({ children }: Props) => {
                 </div>
               </div>
             )}
-            <hr className="my-3 border-gray-200" />
-            <div className="space-x-2">
+            <div className="mt-3 space-x-2">
               <Link
                 href="/"
                 className="inline-flex items-center rounded border border-gray-300 bg-white px-2.5 py-1.5 text-xs font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
               >
                 Edit
               </Link>
-              <button
-                type="button"
-                className="inline-flex items-center rounded border border-red-300 bg-white px-2.5 py-1.5 text-xs font-medium text-red-700 shadow-sm hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
-                onClick={reset}
-              >
-                Reset
-              </button>
             </div>
           </div>
         )}
