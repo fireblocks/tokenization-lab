@@ -1,6 +1,9 @@
+import Link from "next/link";
 import { useState, useMemo, useEffect } from "react";
+import { clsx } from "clsx";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { RocketLaunchIcon } from "@heroicons/react/24/outline";
 import { authRequestSchema, AuthRequest } from "~/lib/schemas";
 import { trpc } from "~/utils/trpc";
 import { useGlobalContext } from "~/context/Global";
@@ -188,7 +191,7 @@ const Index = () => {
         <Form
           title="EVM Network"
           description="Choose a blockchain."
-          disabled={!assetOptions.length || accountsForAssetQuery.isLoading}
+          disabled={accountsForAssetQuery.isLoading}
         >
           <Select
             className="col-span-6"
@@ -203,7 +206,7 @@ const Index = () => {
         <Form
           title="Vault Account"
           description={`Choose a vault account with ${assetName}.`}
-          disabled={!accountOptions.length || addressQuery.isLoading}
+          disabled={addressQuery.isLoading}
         >
           <Select
             className="col-span-6"
@@ -221,6 +224,24 @@ const Index = () => {
             }}
           />
         </Form>
+      </div>
+      <div className="flex justify-center py-3">
+        <Link
+          href="/deploy"
+          className={clsx(
+            "text-md inline-flex justify-center rounded-md border border-transparent bg-blue-600 py-3 px-5 font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2",
+            (assetsMutation.isLoading ||
+              accountsForAssetQuery.isLoading ||
+              addressQuery.isLoading) &&
+              "pointer-events-none opacity-50"
+          )}
+        >
+          <RocketLaunchIcon
+            className={"-ml-1 mr-3 h-6 w-6 flex-shrink-0 text-white"}
+            aria-hidden="true"
+          />{" "}
+          Deploy a Token
+        </Link>
       </div>
     </>
   );

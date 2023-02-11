@@ -1,5 +1,3 @@
-type ExplorerType = "address" | "token" | "tx";
-
 export const defaultAsset = {
   id: "ETH_TEST3",
   name: "Ethereum Test (Goerli)",

@@ -22,8 +22,8 @@ export const Input = ({ label, error, inputProps, ...props }: Props) => {
       >
         {label}
       </label>
-      <div className="mt-1 flex rounded-md shadow-sm">
-        <div className="relative flex flex-grow items-stretch focus-within:z-10">
+      <div className="flex mt-1 rounded-md shadow-sm">
+        <div className="flex relative flex-grow items-stretch focus-within:z-10">
           <input
             {...inputProps}
             id={inputId}
@@ -34,11 +34,13 @@ export const Input = ({ label, error, inputProps, ...props }: Props) => {
                 : "border-gray-300 focus:border-blue-500 focus:ring-blue-500",
               inputProps?.className
             )}
+            autoComplete="off"
+            autoCorrect="off"
             aria-invalid={hasError}
             aria-describedby={hasError ? errorId : undefined}
           />
           {hasError && (
-            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+            <div className="flex pointer-events-none absolute inset-y-0 right-0 items-center pr-3">
               <ExclamationCircleIcon
                 className="h-5 w-5 text-red-500"
                 aria-hidden="true"

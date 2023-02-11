@@ -3,7 +3,7 @@ import { ReactNode, ForwardRefExoticComponent, SVGProps } from "react";
 import { clsx } from "clsx";
 import Link from "next/link";
 import {
-  ArrowUpCircleIcon,
+  RocketLaunchIcon,
   PlusCircleIcon,
   FireIcon,
 } from "@heroicons/react/24/outline";
@@ -64,7 +64,7 @@ export const Layout = ({ children }: Props) => {
   const navigation = [];
 
   if (apiKey && account) {
-    navigation.push(navItem("Deploy", ArrowUpCircleIcon));
+    navigation.push(navItem("Deploy", RocketLaunchIcon));
   }
 
   if (contract) {
@@ -72,8 +72,8 @@ export const Layout = ({ children }: Props) => {
   }
 
   return (
-    <div className="container mx-auto font-sans sm:py-6 sm:px-6 lg:grid lg:grid-cols-12 lg:gap-x-5 lg:px-8">
-      <aside className="space-y-4 py-6 px-2 sm:px-6 lg:col-span-3 lg:py-0 lg:px-0">
+    <div className="container mx-auto p-3 sm:p-6 md:grid md:grid-cols-12 md:gap-x-6">
+      <aside className="mb-4 space-y-4 md:col-span-4">
         <div className="flex flex-shrink-0 items-center">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -99,27 +99,26 @@ export const Layout = ({ children }: Props) => {
               </p>
             )}
             {!!accountName && (
-              <p className="mt-1 truncate text-sm text-gray-500">
+              <p className="flex mt-1 items-center text-sm text-gray-500">
                 <span className="font-medium text-gray-700">Account</span>{" "}
-                <span>{accountName}</span>
-              </p>
-            )}
-            {!!accountAddress && (
-              <p className="mt-1 truncate text-sm text-gray-500">
-                <span className="font-medium text-gray-700">Address</span>{" "}
-                <a
-                  className="font-mono text-blue-500 hover:text-blue-700"
-                  href={accountExplorer ?? "#"}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {accountAddress}
-                </a>
+                <span className="mx-1">{accountName}</span>
+                {!!accountAddress && (
+                  <a
+                    className="truncate font-mono text-blue-500 hover:text-blue-700"
+                    href={accountExplorer ?? "#"}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {accountAddress}
+                  </a>
+                )}
               </p>
             )}
             {!!tokenAddress && (
               <p className="mt-1 truncate text-sm text-gray-500">
-                <span className="font-medium text-gray-700">Contract</span>{" "}
+                <span className="font-medium text-gray-700">
+                  {contract.name}
+                </span>{" "}
                 <a
                   className="font-mono text-blue-500 hover:text-blue-700"
                   href={tokenExplorer ?? "#"}
@@ -131,9 +130,9 @@ export const Layout = ({ children }: Props) => {
               </p>
             )}
             {!!account.balances && (
-              <div className="mt-1 flex justify-between text-sm text-gray-500">
+              <div className="flex mt-1 justify-between text-sm text-gray-500">
                 <span className="font-medium text-gray-700">Balances</span>
-                <div className="ml-1 flex flex-col truncate text-right">
+                <div className="flex ml-1 flex-col truncate text-right">
                   <a
                     className="truncate font-mono text-blue-500 hover:text-blue-700"
                     href={accountExplorer ?? "#"}
@@ -182,7 +181,7 @@ export const Layout = ({ children }: Props) => {
                 item.current
                   ? "bg-white text-blue-700 hover:bg-white hover:text-blue-700"
                   : "text-gray-900 hover:bg-gray-50 hover:text-gray-900",
-                "group flex items-center rounded-md px-3 py-2 text-sm font-medium"
+                "flex group items-center rounded-md px-3 py-2 text-sm font-medium"
               )}
               aria-current={item.current ? "page" : undefined}
             >
@@ -200,7 +199,7 @@ export const Layout = ({ children }: Props) => {
           ))}
         </nav>
       </aside>
-      <div className="space-y-6 sm:px-6 lg:col-span-9 lg:px-0">{children}</div>
+      <main className="space-y-6 md:col-span-8">{children}</main>
     </div>
   );
 };
