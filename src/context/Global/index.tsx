@@ -60,20 +60,20 @@ export const GlobalContextProvider = ({ children }: Props) => {
   const router = useRouter();
 
   useEffect(() => {
-    if (router.pathname !== "/" && !state.apiKey) {
-      router.push("/");
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [router.pathname, state.apiKey]);
+    const storedApiKey = apiKeyStorage.get();
 
-  useEffect(() => {
     setState((prev) => ({
       ...prev,
       assetId: assetIdStorage.get(),
-      apiKey: apiKeyStorage.get(),
+      apiKey: storedApiKey,
       account: accountStorage.get(),
       contract: contractStorage.get(),
     }));
+
+    if (!storedApiKey) {
+      router.push("/");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const setStoredState = <T = any,>(

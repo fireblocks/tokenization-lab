@@ -71,8 +71,8 @@ export const Layout = ({ children }: Props) => {
   }
 
   return (
-    <div className="container mx-auto p-3 sm:p-6 md:grid md:grid-cols-12 md:gap-x-6">
-      <aside className="mb-4 space-y-4 md:col-span-4">
+    <div className="container mx-auto p-3 sm:p-6 md:grid md:grid-cols-12 md:gap-x-6 md:p-8 lg:p-12">
+      <aside className="mb-4 space-y-4 md:col-span-4 xl:col-span-3">
         <div className="flex flex-shrink-0 items-center">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -190,7 +190,7 @@ export const Layout = ({ children }: Props) => {
           ))}
         </nav>
       </aside>
-      <main className="space-y-6 md:col-span-8">{children}</main>
+      <main className="space-y-6 md:col-span-8 xl:col-span-9">{children}</main>
     </div>
   );
 };

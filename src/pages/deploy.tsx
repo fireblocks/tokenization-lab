@@ -67,7 +67,9 @@ const Deploy = () => {
   return (
     <Form
       title="Deploy Token"
-      description={`Deploy an ERC-20 token contract to the ${assetName} blockchain.`}
+      description={`Deploy an ERC-20 token contract to the ${
+        assetName ? ` ${assetName}` : ""
+      } blockchain.`}
       submitLabel="Deploy"
       disabled={deployMutation.isLoading}
       onSubmit={handleSubmit(onSubmit)}

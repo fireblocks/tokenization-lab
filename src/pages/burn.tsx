@@ -47,7 +47,9 @@ const Burn = () => {
   return (
     <Form
       title="Burn Token"
-      description={`Destroy ${contract?.symbol} tokens in your account.`}
+      description={`Destroy ${
+        contract?.symbol ? ` ${contract.symbol}` : ""
+      } tokens in your account.`}
       submitLabel="Burn"
       disabled={burnMutation.isLoading}
       onSubmit={handleSubmit(onSubmit)}

@@ -47,7 +47,9 @@ const Mint = () => {
   return (
     <Form
       title="Mint Token"
-      description={`Issue new ${contract?.symbol} tokens to your account.`}
+      description={`Issue new ${
+        contract?.symbol ? ` ${contract.symbol}` : ""
+      } tokens to your account.`}
       submitLabel="Mint"
       disabled={mintMutation.isLoading}
       onSubmit={handleSubmit(onSubmit)}
