@@ -34,13 +34,13 @@ To create an instant development environment, [open the app in StackBlitz](https
 ### Install dependencies
 
 ```bash
-yarn install
+npm install
 ```
 
 ### Start project
 
 ```bash
-yarn dev
+npm run dev
 ```
 
 ## ⚖️ Legal
