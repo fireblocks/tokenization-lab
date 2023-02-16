@@ -1,18 +1,15 @@
-import path from "path";
-import fs from "fs";
 import { BrowserProvider } from "ethers";
 import { FireblocksWeb3Provider } from "@fireblocks/fireblocks-web3-provider";
 import { TransactionRequest } from "~/lib/schemas";
 import { getAsset } from "~/lib/assets";
+import { getApiPrivateKey } from "./apiPrivateKey";
 
 export const getWeb3Provider = async ({
   apiKey,
   assetId,
   account,
 }: TransactionRequest) => {
-  const privateKeyPath = path.resolve(process.cwd(), "keys", "api.key");
-
-  const privateKey = await fs.promises.readFile(privateKeyPath, "utf-8");
+  const privateKey = await getApiPrivateKey();
 
   const asset = getAsset(assetId);
 
