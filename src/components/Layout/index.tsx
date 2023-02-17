@@ -1,10 +1,5 @@
 import { useRouter } from "next/router";
-import {
-  useState,
-  ReactNode,
-  ForwardRefExoticComponent,
-  SVGProps,
-} from "react";
+import { ReactNode, ForwardRefExoticComponent, SVGProps } from "react";
 import { clsx } from "clsx";
 import Link from "next/link";
 import {
@@ -27,6 +22,10 @@ export const Layout = ({ children }: Props) => {
   const { apiKey, assetId, assetName, account, contract } = useGlobalContext();
 
   const { onClose: onCloseNotification } = useNotification();
+
+  const isLoggedIn = !!(assetName && apiKey && account);
+
+  const hasContract = isLoggedIn && !!contract;
 
   const accountName = account?.name || account?.id;
 
@@ -52,7 +51,8 @@ export const Layout = ({ children }: Props) => {
     name: string,
     icon: ForwardRefExoticComponent<
       SVGProps<SVGSVGElement> & { title?: string; titleId?: string }
-    >
+    >,
+    disabled = !isLoggedIn
   ) => {
     const href = `/${name.toLowerCase()}`;
 
@@ -61,18 +61,15 @@ export const Layout = ({ children }: Props) => {
       icon,
       href,
       current: pathname === href,
+      disabled,
     };
   };
 
-  const navigation = [];
-
-  if (apiKey && account) {
-    navigation.push(navItem("Deploy", RocketLaunchIcon));
-  }
-
-  if (contract) {
-    navigation.push(navItem("Mint", PlusCircleIcon), navItem("Burn", FireIcon));
-  }
+  const navigation = [
+    navItem("Deploy", RocketLaunchIcon),
+    navItem("Mint", PlusCircleIcon, !hasContract),
+    navItem("Burn", FireIcon, !hasContract),
+  ];
 
   return (
     <>
@@ -156,15 +153,16 @@ export const Layout = ({ children }: Props) => {
             {navigation.map((item) => (
               <Link
                 key={item.name}
-                href={item.href}
+                href={item.disabled ? "#" : item.href}
                 className={clsx(
                   item.current
                     ? "bg-white text-blue-700 hover:bg-white hover:text-blue-700"
                     : "text-gray-900 hover:bg-gray-50 hover:text-gray-900",
-                  "group flex items-center rounded-md px-3 py-2 text-sm font-medium"
+                  "group flex items-center rounded-md px-3 py-2 text-sm font-medium",
+                  item.disabled && "pointer-events-none opacity-50"
                 )}
                 aria-current={item.current ? "page" : undefined}
-                onClick={onCloseNotification}
+                onClick={item.disabled ? undefined : onCloseNotification}
               >
                 <item.icon
                   className={clsx(

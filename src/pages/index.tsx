@@ -6,6 +6,7 @@ import { clsx } from "clsx";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
+  ArrowPathIcon,
   CheckCircleIcon,
   XCircleIcon,
   RocketLaunchIcon,
@@ -64,16 +65,29 @@ const Index = ({ hasApiPrivateKey }: Props) => {
   });
 
   const assetsMutation = trpc.assets.useMutation({
-    onSuccess: (_assets, vars) => {
+    onMutate: ({ apiKey }) => {
+      resetWalletData();
+
+      setTmpApiKey(apiKey);
+
+      onOpenNotification({
+        title: `Logging in to Fireblocks API`,
+        icon: ArrowPathIcon,
+      });
+    },
+    onSuccess: (_assets, { apiKey }) => {
       const hasDefaultAsset = _assets.some((a) => a.id === defaultAsset.id);
 
       const _assetId = hasDefaultAsset ? defaultAsset.id : _assets[0].id;
 
       setAssetId(_assetId as AssetId);
 
-      setApiKey(vars.apiKey);
+      setApiKey(apiKey);
 
-      onCloseNotification();
+      onOpenNotification({
+        title: `Fetching vault accounts`,
+        icon: ArrowPathIcon,
+      });
     },
     onError: (error) => {
       resetWalletData();
@@ -116,7 +130,10 @@ const Index = ({ hasApiPrivateKey }: Props) => {
       onSuccess: (_accounts) => {
         setTmpAccountId(parseInt(_accounts[0].id));
 
-        onCloseNotification();
+        onOpenNotification({
+          title: `Fetching address`,
+          icon: ArrowPathIcon,
+        });
       },
       onError: (error) => {
         resetWalletData();
@@ -213,11 +230,16 @@ const Index = ({ hasApiPrivateKey }: Props) => {
     }
   );
 
-  const onSubmitApiKey = (formData: AuthRequest) => {
-    setTmpApiKey(formData.apiKey);
-    resetWalletData();
-    assetsMutation.mutate(formData);
+  const onClickReset = () => {
+    reset({ apiKey: "" });
+
+    resetContext();
+
+    onCloseNotification();
   };
+
+  const onSubmitApiKey = (formData: AuthRequest) =>
+    assetsMutation.mutate(formData);
 
   useEffect(() => {
     if (!isDirty && defaultApiKey) {
@@ -269,10 +291,7 @@ const Index = ({ hasApiPrivateKey }: Props) => {
           <button
             type="button"
             className="inline-flex justify-center rounded-md border border-red-300 bg-white py-2 px-4 text-sm font-medium text-red-700 shadow-sm hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
-            onClick={() => {
-              reset({ apiKey: "" });
-              resetContext();
-            }}
+            onClick={onClickReset}
           >
             Reset
           </button>
