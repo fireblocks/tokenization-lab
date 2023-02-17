@@ -3,7 +3,7 @@ import fs from "fs";
 
 const PRIVATE_KEY_B64 = process.env.PRIVATE_KEY_B64;
 
-const PRIVATE_KEY_PATH = path.resolve(process.cwd(), "keys", "api.key");
+const PRIVATE_KEY_PATH = path.resolve(process.cwd(), "api.key");
 
 const PRIVATE_KEY_ERROR = new Error("No API private key found");
 
