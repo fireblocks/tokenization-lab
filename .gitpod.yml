@@ -1,10 +1,11 @@
 tasks:
   - name: Run development server
+    before: nvm install
     init: npm install
     command: npm run dev
 
 ports:
   - port: 3000
-    onOpen: open-preview
+    onOpen: open-browser
     name: Lab
     description: Fireblocks Tokenization Lab
