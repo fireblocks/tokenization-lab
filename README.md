@@ -16,6 +16,12 @@ Deploy, mint, and burn an ERC-20 token
 
 ---
 
+<a href="https://gitpod.io/#https://github.com/Burry/tokenization-lab" target="_blank">
+<p align="center">
+<img alt="Open in Gitpod" src="docs/screenshot.png" />
+</p>
+</a>
+
 ## 🔐 Authentication
 
 This lab uses the Fireblocks API and requires an API key and API private key. You'll set your API key in the browser, and there's two ways you can set your API private key:
