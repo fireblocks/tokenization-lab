@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -34,22 +35,32 @@ const Deploy = () => {
 
   const { onOpen: onOpenNotification } = useNotification();
 
+  const defaultValues = {
+    assetId,
+    apiKey,
+    account,
+    name: contractInfo?.name || "MyToken",
+    symbol: contractInfo?.symbol || "MTK",
+    premint: 1000000,
+  };
+
   const {
     register,
+    reset,
     watch,
     handleSubmit,
-    formState: { errors },
+    formState: { isDirty, errors },
   } = useForm<DeployRequest>({
     resolver: zodResolver(deployRequestSchema),
-    defaultValues: {
-      assetId,
-      apiKey,
-      account,
-      name: contractInfo?.name || "MyToken",
-      symbol: contractInfo?.symbol || "MTK",
-      premint: 1000000,
-    },
+    defaultValues,
   });
+
+  useEffect(() => {
+    if (!isDirty && assetId && apiKey && account) {
+      reset(defaultValues);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isDirty, assetId, apiKey, account]);
 
   const { name, symbol, premint } = watch();
 
@@ -114,7 +125,7 @@ const Deploy = () => {
       } blockchain.`}
       submitLabel="Deploy"
       disabled={deployMutation.isLoading}
-      onSubmit={handleSubmit(onSubmit)}
+      onSubmit={handleSubmit(onSubmit, (errors) => console.error(errors))}
     >
       {hiddenInputs.map((key) => (
         <input key={key} type="hidden" {...register(key)} />

@@ -262,7 +262,9 @@ const Index = ({ hasApiPrivateKey }: Props) => {
         description="Configure access to Fireblocks with an API user."
         submitLabel="Log In"
         disabled={assetsMutation.isLoading}
-        onSubmit={handleSubmit(onSubmitApiKey)}
+        onSubmit={handleSubmit(onSubmitApiKey, (errors) =>
+          console.error(errors)
+        )}
         actions={
           <button
             type="button"

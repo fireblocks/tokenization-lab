@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -65,20 +66,30 @@ const Burn = () => {
       }),
   });
 
+  const defaultValues = {
+    assetId,
+    apiKey,
+    account,
+    contract,
+    amount: 1000000,
+  };
+
   const {
     register,
+    reset,
     handleSubmit,
-    formState: { errors },
+    formState: { isDirty, errors },
   } = useForm<BurnRequest>({
     resolver: zodResolver(burnRequestSchema),
-    defaultValues: {
-      assetId,
-      apiKey,
-      account,
-      contract,
-      amount: 1000000,
-    },
+    defaultValues,
   });
+
+  useEffect(() => {
+    if (!isDirty && assetId && apiKey && account) {
+      reset(defaultValues);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isDirty, assetId, apiKey, account]);
 
   const onSubmit = (formData: BurnRequest) => burnMutation.mutate(formData);
 
@@ -90,7 +101,7 @@ const Burn = () => {
       } tokens in your account.`}
       submitLabel="Burn"
       disabled={burnMutation.isLoading}
-      onSubmit={handleSubmit(onSubmit)}
+      onSubmit={handleSubmit(onSubmit, (errors) => console.error(errors))}
     >
       {hiddenInputs.map((key) => (
         <input key={key} type="hidden" {...register(key)} />

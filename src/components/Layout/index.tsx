@@ -13,6 +13,7 @@ import {
   FireIcon,
 } from "@heroicons/react/24/outline";
 import { useGlobalContext } from "~/context/Global";
+import { useNotification } from "~/context/Notification";
 import { Notification } from "~/components/Notification";
 import { getAsset } from "~/lib/assets";
 
@@ -24,6 +25,8 @@ export const Layout = ({ children }: Props) => {
   const { pathname } = useRouter();
 
   const { apiKey, assetId, assetName, account, contract } = useGlobalContext();
+
+  const { onClose: onCloseNotification } = useNotification();
 
   const accountName = account?.name || account?.id;
 
@@ -38,11 +41,6 @@ export const Layout = ({ children }: Props) => {
   const accountExplorer =
     assetExplorer && accountAddress
       ? `https://${assetExplorer}/address/${accountAddress}`
-      : null;
-
-  const tokenExplorer =
-    assetExplorer && tokenAddress
-      ? `https://${assetExplorer}/token/${tokenAddress}`
       : null;
 
   const tokenBalanceExplorer =
@@ -105,19 +103,9 @@ export const Layout = ({ children }: Props) => {
                 </p>
               )}
               {!!accountName && (
-                <p className="mt-1 flex items-center text-sm text-gray-500">
+                <p className="mt-1 truncate text-sm text-gray-500">
                   <span className="font-medium text-gray-700">Account</span>{" "}
-                  <span className="mx-1">{accountName}</span>
-                  {!!accountAddress && (
-                    <a
-                      className="truncate font-mono text-blue-500 hover:text-blue-700"
-                      href={accountExplorer ?? "#"}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {accountAddress}
-                    </a>
-                  )}
+                  <span>{accountName}</span>
                 </p>
               )}
               {!!tokenAddress && (
@@ -125,14 +113,7 @@ export const Layout = ({ children }: Props) => {
                   <span className="font-medium text-gray-700">
                     {contract.name}
                   </span>{" "}
-                  <a
-                    className="font-mono text-blue-500 hover:text-blue-700"
-                    href={tokenExplorer ?? "#"}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {tokenAddress}
-                  </a>
+                  <span className="font-mono">{tokenAddress}</span>
                 </p>
               )}
               {!!account.balances && (
@@ -164,6 +145,7 @@ export const Layout = ({ children }: Props) => {
                 <Link
                   href="/"
                   className="inline-flex items-center rounded border border-gray-300 bg-white px-2.5 py-1.5 text-xs font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                  onClick={onCloseNotification}
                 >
                   Edit
                 </Link>
@@ -182,6 +164,7 @@ export const Layout = ({ children }: Props) => {
                   "group flex items-center rounded-md px-3 py-2 text-sm font-medium"
                 )}
                 aria-current={item.current ? "page" : undefined}
+                onClick={onCloseNotification}
               >
                 <item.icon
                   className={clsx(
