@@ -1,10 +1,15 @@
 import { GetStaticProps } from "next";
+import { useRouter } from "next/router";
 import Link from "next/link";
 import { useState, useMemo, useEffect } from "react";
 import { clsx } from "clsx";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { XCircleIcon, RocketLaunchIcon } from "@heroicons/react/24/outline";
+import {
+  CheckCircleIcon,
+  XCircleIcon,
+  RocketLaunchIcon,
+} from "@heroicons/react/24/outline";
 import { authRequestSchema, AuthRequest } from "~/lib/schemas";
 import { trpc } from "~/utils/trpc";
 import { useGlobalContext } from "~/context/Global";
@@ -20,6 +25,8 @@ type Props = {
 };
 
 const Index = ({ hasApiPrivateKey }: Props) => {
+  const router = useRouter();
+
   const {
     assetId,
     assetName,
@@ -147,7 +154,7 @@ const Index = ({ hasApiPrivateKey }: Props) => {
     {
       enabled:
         !!apiKey &&
-        !!tmpAccountId &&
+        tmpAccountId !== null &&
         !!accountOptions.length &&
         !assetsMutation.isError &&
         !assetsMutation.isLoading &&
@@ -175,13 +182,30 @@ const Index = ({ hasApiPrivateKey }: Props) => {
 
         setAccount(_account);
 
-        onCloseNotification();
+        onOpenNotification({
+          title: "Logged into Fireblocks API",
+          description: `Selected network "${assetName}" with vault account "${selectedAccount.name}"`,
+          icon: CheckCircleIcon,
+          actions: [
+            {
+              key: "deploy",
+              primary: true,
+              children: "Deploy a Token",
+              isLink: false,
+              onClick: () => {
+                router.push("/deploy");
+
+                onCloseNotification();
+              },
+            },
+          ],
+        });
       },
       onError: (error) => {
         resetWalletData();
 
         onOpenNotification({
-          title: `Failed to get vault account deposit address`,
+          title: "Failed to get vault account deposit address",
           description: error.message,
           icon: XCircleIcon,
         });
