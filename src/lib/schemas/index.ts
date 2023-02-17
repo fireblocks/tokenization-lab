@@ -63,9 +63,19 @@ const deployedContractSchema = z.object({
   abi: z.any().array(),
 });
 
+const alphanumericRegExp = /[a-zA-Z0-9]+/;
+
 const tokenMetadataSchema = z.object({
-  name: z.string().trim().min(1, "Name is required"),
-  symbol: z.string().trim().min(1, "Symbol is required"),
+  name: z
+    .string()
+    .trim()
+    .min(1, "Name is required")
+    .regex(alphanumericRegExp, "Name must contain alphanumeric characters"),
+  symbol: z
+    .string()
+    .trim()
+    .min(1, "Symbol is required")
+    .regex(alphanumericRegExp, "Symbol must contain alphanumeric characters"),
 });
 
 export const contractSchema = deployedContractSchema.merge(tokenMetadataSchema);
