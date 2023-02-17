@@ -1,4 +1,4 @@
-import { GetServerSideProps } from "next";
+import { GetStaticProps } from "next";
 import Link from "next/link";
 import { useState, useMemo, useEffect } from "react";
 import { clsx } from "clsx";
@@ -221,7 +221,7 @@ const Index = ({ hasApiPrivateKey }: Props) => {
               An API private key is missing on the server. Place your API
               private key within the repository at <code>keys/api.key</code>, or
               set the <code>PRIVATE_KEY_B64</code> environment variable to a
-              base64 encoding of your API private key. Then refresh this page to
+              base64 encoding of your API private key. Then rebuild this app to
               continue.
             </p>
           </div>
@@ -337,7 +337,7 @@ const Index = ({ hasApiPrivateKey }: Props) => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps<Props> = async () => {
+export const getStaticProps: GetStaticProps<Props> = async () => {
   try {
     await getApiPrivateKey();
 
