@@ -1,14 +1,10 @@
+import { GetServerSideProps } from "next";
 import Link from "next/link";
 import { useState, useMemo, useEffect } from "react";
 import { clsx } from "clsx";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  ArrowPathIcon,
-  CheckCircleIcon,
-  XCircleIcon,
-  RocketLaunchIcon,
-} from "@heroicons/react/24/outline";
+import { XCircleIcon, RocketLaunchIcon } from "@heroicons/react/24/outline";
 import { authRequestSchema, AuthRequest } from "~/lib/schemas";
 import { trpc } from "~/utils/trpc";
 import { useGlobalContext } from "~/context/Global";
@@ -17,8 +13,13 @@ import { Form } from "~/components/Form";
 import { Input } from "~/components/Input";
 import { Select } from "~/components/Select";
 import { AssetId, defaultAsset, getAsset } from "~/lib/assets";
+import { getApiPrivateKey } from "~/server/helpers/apiPrivateKey";
 
-const Index = () => {
+type Props = {
+  hasApiPrivateKey: boolean;
+};
+
+const Index = ({ hasApiPrivateKey }: Props) => {
   const {
     assetId,
     assetName,
@@ -208,6 +209,27 @@ const Index = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [defaultApiKey]);
 
+  if (!hasApiPrivateKey) {
+    return (
+      <div className="shadow sm:overflow-hidden sm:rounded-md">
+        <div className="h-full space-y-6 bg-white py-6 px-4 sm:p-6">
+          <div>
+            <h3 className="text-lg font-medium leading-6 text-gray-900">
+              Fireblocks API Setup
+            </h3>
+            <p className="mt-1 text-sm text-gray-500">
+              An API private key is missing on the server. Place your API
+              private key within the repository at <code>keys/api.key</code>, or
+              set the <code>PRIVATE_KEY_B64</code> environment variable to a
+              base64 encoding of your API private key. Then refresh this page to
+              continue.
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <>
       <Form
@@ -313,6 +335,24 @@ const Index = () => {
       </div>
     </>
   );
+};
+
+export const getServerSideProps: GetServerSideProps<Props> = async () => {
+  try {
+    await getApiPrivateKey();
+
+    return {
+      props: {
+        hasApiPrivateKey: true,
+      },
+    };
+  } catch {
+    return {
+      props: {
+        hasApiPrivateKey: false,
+      },
+    };
+  }
 };
 
 export default Index;
