@@ -22,9 +22,10 @@ const apiKeyStorage = new Storage("ApiKey", apiKeySchema);
 const accountStorage = new Storage("Account", accountSchema);
 const contractStorage = new Storage("Contract", contractSchema);
 
-interface IGlobalContext {
+type IGlobalContext = {
   assetId?: AssetId;
   assetName?: Asset["name"] | AssetId;
+  assetExplorer?: Asset["explorer"];
   apiKey?: string;
   account?: Account;
   contract?: Contract;
@@ -33,11 +34,12 @@ interface IGlobalContext {
   setAccount: (account: Account | null) => void;
   setContract: (contract: Contract | null) => void;
   resetContext: VoidFunction;
-}
+};
 
 const defaultValue: IGlobalContext = {
   assetId: undefined,
   assetName: undefined,
+  assetExplorer: undefined,
   apiKey: undefined,
   account: undefined,
   contract: undefined,
@@ -109,12 +111,16 @@ export const GlobalContextProvider = ({ children }: Props) => {
     setState(defaultValue);
   };
 
-  const assetName =
-    (state.assetId && getAsset(state.assetId)?.name) || state.assetId;
+  const asset = state.assetId ? getAsset(state.assetId) : null;
+
+  const assetName = asset?.name || state.assetId;
+
+  const assetExplorer = asset?.explorer;
 
   const value: IGlobalContext = {
     ...state,
     assetName,
+    assetExplorer,
     setAssetId,
     setApiKey,
     setAccount,

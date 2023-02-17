@@ -1,9 +1,15 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  ArrowPathIcon,
+  CheckCircleIcon,
+  XCircleIcon,
+} from "@heroicons/react/24/outline";
 import { deployRequestSchema, DeployRequest, Account } from "~/lib/schemas";
 import { trpc } from "~/utils/trpc";
 import { getContract } from "~/lib/contract";
 import { useGlobalContext } from "~/context/Global";
+import { useNotification } from "~/context/Notification";
 import { Form } from "~/components/Form";
 import { Input } from "~/components/Input";
 
@@ -18,12 +24,15 @@ const Deploy = () => {
   const {
     assetId,
     assetName,
+    assetExplorer,
     apiKey,
     account,
     contract: contractInfo,
     setAccount,
     setContract,
   } = useGlobalContext();
+
+  const { onOpen: onOpenNotification } = useNotification();
 
   const {
     register,
@@ -45,7 +54,34 @@ const Deploy = () => {
   const { name, symbol, premint } = watch();
 
   const deployMutation = trpc.deploy.useMutation({
-    onSuccess: ({ abi, contractAddress, balances }) => {
+    onMutate: ({ name }) =>
+      onOpenNotification({
+        title: `Deploying token "${name}"`,
+        description: `On ${assetName}`,
+        icon: ArrowPathIcon,
+      }),
+    onSuccess: ({ abi, contractAddress, balances }, { name, symbol }) => {
+      onOpenNotification({
+        title: `Deployed token "${name}"`,
+        description: `On ${assetName}${
+          balances.token
+            ? `. Balance: ${balances.token.toFixed(4)} ${symbol}`
+            : ``
+        }`,
+        icon: CheckCircleIcon,
+        actions: [
+          {
+            key: "explorer",
+            primary: true,
+            children: "Open Explorer",
+            href: `https://${assetExplorer}/token/${contractAddress}`,
+            target: "_blank",
+            rel: "noopener noreferrer",
+            isLink: true,
+          },
+        ],
+      });
+
       setAccount({
         ...(account as Account),
         balances,
@@ -58,6 +94,12 @@ const Deploy = () => {
         address: contractAddress as string,
       });
     },
+    onError: (error) =>
+      onOpenNotification({
+        title: `Failed to deploy token "${name}"`,
+        description: error.message,
+        icon: XCircleIcon,
+      }),
   });
 
   const contract = getContract({ name, symbol, premint });

@@ -3,10 +3,16 @@ import { useState, useMemo, useEffect } from "react";
 import { clsx } from "clsx";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { RocketLaunchIcon } from "@heroicons/react/24/outline";
+import {
+  ArrowPathIcon,
+  CheckCircleIcon,
+  XCircleIcon,
+  RocketLaunchIcon,
+} from "@heroicons/react/24/outline";
 import { authRequestSchema, AuthRequest } from "~/lib/schemas";
 import { trpc } from "~/utils/trpc";
 import { useGlobalContext } from "~/context/Global";
+import { useNotification } from "~/context/Notification";
 import { Form } from "~/components/Form";
 import { Input } from "~/components/Input";
 import { Select } from "~/components/Select";
@@ -24,6 +30,9 @@ const Index = () => {
     setContract,
     resetContext,
   } = useGlobalContext();
+
+  const { onOpen: onOpenNotification, onClose: onCloseNotification } =
+    useNotification();
 
   const [tmpApiKey, setTmpApiKey] = useState(defaultApiKey || null);
   const [tmpAccountId, setTmpAccountId] = useState<number | null>(null);
@@ -55,8 +64,18 @@ const Index = () => {
       setAssetId(_assetId as AssetId);
 
       setApiKey(vars.apiKey);
+
+      onCloseNotification();
     },
-    onError: () => resetWalletData(),
+    onError: (error) => {
+      resetWalletData();
+
+      onOpenNotification({
+        title: `Failed to log in to Fireblocks`,
+        description: error.message,
+        icon: XCircleIcon,
+      });
+    },
   });
 
   const assetOptions = useMemo(() => {
@@ -86,8 +105,20 @@ const Index = () => {
         !!assetOptions.length &&
         !assetsMutation.isError &&
         !assetsMutation.isLoading,
-      onSuccess: (_accounts) => setTmpAccountId(parseInt(_accounts[0].id)),
-      onError: () => resetWalletData(),
+      onSuccess: (_accounts) => {
+        setTmpAccountId(parseInt(_accounts[0].id));
+
+        onCloseNotification();
+      },
+      onError: (error) => {
+        resetWalletData();
+
+        onOpenNotification({
+          title: `Failed to get vault accounts`,
+          description: error.message,
+          icon: XCircleIcon,
+        });
+      },
     }
   );
 
@@ -142,8 +173,18 @@ const Index = () => {
         };
 
         setAccount(_account);
+
+        onCloseNotification();
       },
-      onError: () => resetWalletData(),
+      onError: (error) => {
+        resetWalletData();
+
+        onOpenNotification({
+          title: `Failed to get vault account deposit address`,
+          description: error.message,
+          icon: XCircleIcon,
+        });
+      },
     }
   );
 

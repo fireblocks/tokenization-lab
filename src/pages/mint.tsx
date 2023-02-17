@@ -1,7 +1,13 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  ArrowPathIcon,
+  CheckCircleIcon,
+  XCircleIcon,
+} from "@heroicons/react/24/outline";
 import { mintRequestSchema, MintRequest, Account } from "~/lib/schemas";
 import { useGlobalContext } from "~/context/Global";
+import { useNotification } from "~/context/Notification";
 import { trpc } from "~/utils/trpc";
 import { Form } from "~/components/Form";
 import { Input } from "~/components/Input";
@@ -16,15 +22,47 @@ const hiddenInputs = [
 ] as const;
 
 const Mint = () => {
-  const { assetId, apiKey, account, contract, setAccount } = useGlobalContext();
+  const { assetId, assetExplorer, apiKey, account, contract, setAccount } =
+    useGlobalContext();
+
+  const { onOpen: onOpenNotification } = useNotification();
 
   const mintMutation = trpc.mint.useMutation({
-    onSuccess: ({ balances }) => {
+    onMutate: ({ amount }) =>
+      onOpenNotification({
+        title: `Minting token "${contract?.name}"`,
+        description: `Creating ${amount} ${contract?.symbol} tokens in account "${account?.name}".`,
+        icon: ArrowPathIcon,
+      }),
+    onSuccess: ({ hash, balances }, { amount }) => {
+      onOpenNotification({
+        title: `Minted token "${contract?.name}"`,
+        description: `Created ${amount} ${contract?.symbol} tokens in account "${account?.name}".`,
+        icon: CheckCircleIcon,
+        actions: [
+          {
+            key: "explorer",
+            primary: true,
+            children: "Open Explorer",
+            href: `https://${assetExplorer}/tx/${hash}`,
+            target: "_blank",
+            rel: "noopener noreferrer",
+            isLink: true,
+          },
+        ],
+      });
+
       setAccount({
         ...(account as Account),
         balances,
       });
     },
+    onError: (error) =>
+      onOpenNotification({
+        title: `Failed to mint token "${contract?.name}"`,
+        description: error.message,
+        icon: XCircleIcon,
+      }),
   });
 
   const {
