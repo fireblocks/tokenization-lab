@@ -8,9 +8,9 @@ Fireblocks Tokenization Lab
 Deploy, mint, and burn an ERC-20 token
 </p>
 
-<a href="https://stackblitz.com/fork/github/Burry/tokenization-lab">
+<a href="https://gitpod.io/#https://github.com/Burry/tokenization-lab">
 <p align="center">
-<img alt="Open in StackBlitz" src="https://developer.stackblitz.com/img/open_in_stackblitz.svg" />
+<img alt="Open in Gitpod" src="https://gitpod.io/button/open-in-gitpod.svg" />
 </p>
 </a>
 
@@ -29,7 +29,7 @@ This lab uses the Fireblocks API and requires an API key and API private key. Yo
 
 ## 🔨 Development
 
-To create an instant development environment, [open the app in StackBlitz](https://stackblitz.com/fork/github/Burry/tokenization-lab). To run it on your local system, clone the repository, and install the LTS version of [Node.js](https://nodejs.org/en/download/).
+To create an instant development environment, [open the app in Gitpod](https://gitpod.io/#https://github.com/Burry/tokenization-lab). To run it on your local system, clone the repository, and install the LTS version of [Node.js](https://nodejs.org/en/download/).
 
 ### Install dependencies
 
@@ -45,6 +45,6 @@ npm run dev
 
 ## ⚖️ Legal
 
-[Copyright © 2022 Fireblocks](https://www.fireblocks.com)
+[Copyright © 2023 Fireblocks](https://www.fireblocks.com)
 
 [MIT License](LICENSE)
