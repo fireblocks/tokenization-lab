@@ -8,7 +8,7 @@ Fireblocks Tokenization Lab
 Deploy, mint, and burn an ERC-20 token
 </p>
 
-<a href="https://gitpod.io/#https://github.com/Burry/tokenization-lab">
+<a href="https://gitpod.io/#https://github.com/Burry/tokenization-lab" target="_blank">
 <p align="center">
 <img alt="Open in Gitpod" src="https://gitpod.io/button/open-in-gitpod.svg" />
 </p>
