@@ -7,7 +7,8 @@ import {
   deploy,
   mint,
   burn,
-} from "~/server/handlers";
+} from "~/server/resolvers";
+import { timeoutResolver } from "~/server/helpers/timeoutResolver";
 import {
   authRequestSchema,
   accountsForAssetRequestSchema,
@@ -20,22 +21,22 @@ import {
 const appRouter = router({
   assets: publicProcedure
     .input(authRequestSchema)
-    .mutation(async ({ input }) => getAssets(input)),
+    .mutation(timeoutResolver(getAssets)),
   accountsForAsset: publicProcedure
     .input(accountsForAssetRequestSchema)
-    .query(async ({ input }) => getAccountsForAsset(input)),
+    .query(timeoutResolver(getAccountsForAsset)),
   getPermanentAddress: publicProcedure
     .input(addressRequestSchema)
-    .query(async ({ input }) => getPermanentAddress(input)),
+    .query(timeoutResolver(getPermanentAddress)),
   deploy: publicProcedure
     .input(deployRequestSchema)
-    .mutation(async ({ input }) => deploy(input)),
+    .mutation(timeoutResolver(deploy)),
   mint: publicProcedure
     .input(mintRequestSchema)
-    .mutation(async ({ input }) => mint(input)),
+    .mutation(timeoutResolver(mint)),
   burn: publicProcedure
     .input(burnRequestSchema)
-    .mutation(async ({ input }) => burn(input)),
+    .mutation(timeoutResolver(burn)),
 });
 
 export type AppRouter = typeof appRouter;
