@@ -1,6 +1,6 @@
 import type { AppType } from "next/app";
 import Head from "next/head";
-import { trpc } from "~/utils/trpc";
+import { trpc } from "~/lib/trpc";
 import "~/styles/global.css";
 import { GlobalContextProvider } from "~/context/Global";
 import { NotificationProvider } from "~/context/Notification";

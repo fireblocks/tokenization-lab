@@ -7,7 +7,7 @@ import {
   XCircleIcon,
 } from "@heroicons/react/24/outline";
 import { deployRequestSchema, DeployRequest, Account } from "~/lib/schemas";
-import { trpc } from "~/utils/trpc";
+import { trpc } from "~/lib/trpc";
 import { getContract } from "~/lib/contract";
 import { useGlobalContext } from "~/context/Global";
 import { useNotification } from "~/context/Notification";

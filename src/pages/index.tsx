@@ -12,7 +12,7 @@ import {
   RocketLaunchIcon,
 } from "@heroicons/react/24/outline";
 import { authRequestSchema, AuthRequest } from "~/lib/schemas";
-import { trpc } from "~/utils/trpc";
+import { trpc } from "~/lib/trpc";
 import { useGlobalContext } from "~/context/Global";
 import { useNotification } from "~/context/Notification";
 import { Form } from "~/components/Form";

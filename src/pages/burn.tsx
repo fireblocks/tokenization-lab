@@ -9,7 +9,7 @@ import {
 import { burnRequestSchema, BurnRequest, Account } from "~/lib/schemas";
 import { useGlobalContext } from "~/context/Global";
 import { useNotification } from "~/context/Notification";
-import { trpc } from "~/utils/trpc";
+import { trpc } from "~/lib/trpc";
 import { Form } from "~/components/Form";
 import { Input } from "~/components/Input";
 
