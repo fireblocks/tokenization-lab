@@ -174,7 +174,7 @@ const Deploy = () => {
         <textarea
           name="contract"
           id="contract"
-          value={contract.solidity}
+          value={contract}
           readOnly
           className="mt-1 block h-80 w-full rounded-md border border-gray-300 py-2 px-3 font-mono shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
         />

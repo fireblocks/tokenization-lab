@@ -1,39 +1,17 @@
-import path from "path";
-import fs from "fs";
 import solc from "solc";
 import { ContractFactory, Contract, InterfaceAbi } from "ethers";
 import { DeployRequest } from "~/lib/schemas";
 import { getContract } from "~/lib/contract";
 import { getWeb3Provider } from "../helpers/web3";
 import { getBalances } from "../helpers/getBalances";
+import Context from "@openzeppelin/contracts/utils/Context.sol";
+import Ownable from "@openzeppelin/contracts/access/Ownable.sol";
+import IERC20 from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import IERC20Metadata from "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
+import ERC20 from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import ERC20Burnable from "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
 
-// We must manually specify the OpenZeppelin contract paths for @vercel/nft to include them in production
-const openZeppelinContractPaths = [
-  path.join(
-    process.cwd(),
-    "@openzeppelin",
-    "contracts",
-    "token",
-    "ERC20",
-    "ERC20.sol"
-  ),
-  path.join(
-    process.cwd(),
-    "@openzeppelin",
-    "contracts",
-    "token",
-    "ERC20",
-    "extensions",
-    "ERC20Burnable.sol"
-  ),
-  path.join(
-    process.cwd(),
-    "@openzeppelin",
-    "contracts",
-    "access",
-    "Ownable.sol"
-  ),
-];
+const FILENAME = "Token.sol";
 
 /**
  * Compile and deploy an ERC-20 token contract, returning account balances.
@@ -55,83 +33,63 @@ export const deploy = async ({
     account,
   });
 
-  const { solidity, contractName } = getContract({ name, symbol, premint });
+  const solidity = getContract({ name, symbol, premint });
 
-  const filename = `${contractName}.sol`;
-
-  try {
-    const openZeppelinSources = openZeppelinContractPaths.reduce(
-      (sources, contractPath) => ({
-        ...sources,
-        [contractPath]: { content: fs.readFileSync(contractPath, "utf8") },
-      }),
-      {} as Record<string, { content: string }>
-    );
-
-    const solcInput = {
-      language: "Solidity",
-      sources: {
-        ...openZeppelinSources,
-        [filename]: { content: solidity },
+  const solcInput = {
+    language: "Solidity",
+    sources: {
+      [FILENAME]: { content: solidity },
+      "@openzeppelin/contracts/utils/Context.sol": { content: Context },
+      "@openzeppelin/contracts/access/Ownable.sol": { content: Ownable },
+      "@openzeppelin/contracts/token/ERC20/IERC20.sol": { content: IERC20 },
+      "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol": {
+        content: IERC20Metadata,
       },
-      settings: {
-        outputSelection: {
-          "*": {
-            "*": ["*"],
-          },
+      "@openzeppelin/contracts/token/ERC20/ERC20.sol": { content: ERC20 },
+      "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol": {
+        content: ERC20Burnable,
+      },
+    },
+    settings: {
+      outputSelection: {
+        "*": {
+          "*": ["*"],
         },
       },
-    };
+    },
+  };
 
-    const output = JSON.parse(solc.compile(JSON.stringify(solcInput)));
+  const output = JSON.parse(solc.compile(JSON.stringify(solcInput)));
 
-    const tokenOutput = output.contracts[filename][contractName];
-
-    const abi = tokenOutput.abi as InterfaceAbi;
-
-    const bytecode = tokenOutput.evm.bytecode.object as string;
-
-    const factory = new ContractFactory(abi, bytecode, signer);
-
-    const contract = await factory.deploy();
-
-    await contract.waitForDeployment();
-
-    const contractAddress = contract.target;
-
-    const _contract = new Contract(contractAddress as string, abi, signer);
-
-    const balances = await getBalances(provider, _contract, signer.address);
-
-    return {
-      contractAddress,
-      abi,
-      balances,
-    };
-  } catch (error) {
-    return {
-      error,
-      contractAddress: "",
-      abi: [],
-      balances: {
-        native: 0,
-        token: 0,
-      },
-      debug: {
-        lsContracts: fs.readdirSync(
-          path.join(process.cwd(), "node_modules", "@openzeppelin", "contracts")
-        ),
-        exists: fs.existsSync(
-          path.join(
-            process.cwd(),
-            "node_modules",
-            "@openzeppelin",
-            "contracts",
-            "token"
-          )
-        ),
-        __dirname,
-      },
-    };
+  if (output.errors?.length) {
+    throw output.errors[0];
   }
+
+  const fileOutput = output.contracts[FILENAME];
+
+  const contractName = Object.keys(fileOutput)[0];
+
+  const tokenOutput = fileOutput[contractName];
+
+  const abi = tokenOutput.abi as InterfaceAbi;
+
+  const bytecode = tokenOutput.evm.bytecode.object as string;
+
+  const factory = new ContractFactory(abi, bytecode, signer);
+
+  const contract = await factory.deploy();
+
+  await contract.waitForDeployment();
+
+  const contractAddress = contract.target;
+
+  const _contract = new Contract(contractAddress as string, abi, signer);
+
+  const balances = await getBalances(provider, _contract, signer.address);
+
+  return {
+    contractAddress,
+    abi,
+    balances,
+  };
 };

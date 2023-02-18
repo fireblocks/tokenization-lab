@@ -6,11 +6,8 @@ import { BuildContract } from "./schemas";
  *
  * @see https://wizard.openzeppelin.com
  */
-export const getContract = ({ name, symbol, premint }: BuildContract) => {
-  const tokenName = name.replace(/"/g, '\\"');
-  const contractName = tokenName.replace(/[^a-zA-Z0-9_]+/g, "");
-
-  const solidity = erc20.print({
+export const getContract = ({ name, symbol, premint }: BuildContract) =>
+  erc20.print({
     name,
     symbol,
     access: "ownable",
@@ -18,9 +15,3 @@ export const getContract = ({ name, symbol, premint }: BuildContract) => {
     mintable: true,
     premint: premint ? premint.toFixed() : undefined,
   });
-
-  return {
-    solidity,
-    contractName,
-  };
-};
