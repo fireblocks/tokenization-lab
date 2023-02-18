@@ -104,8 +104,6 @@ export const deploy = async ({
       debug: {
         nodeModules: nodeModules(),
         cwd: process.cwd(),
-        lsRoot: fs.readdirSync("/"),
-        lsVar: fs.readdirSync("/var"),
         lsCwd: fs.readdirSync(process.cwd()),
         lsNodeModules: fs.readdirSync(nodeModules()),
         __dirname,
