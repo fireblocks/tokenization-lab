@@ -7,23 +7,43 @@ import { getContract } from "~/lib/contract";
 import { getWeb3Provider } from "../helpers/web3";
 import { getBalances } from "../helpers/getBalances";
 
-const findImports = (relativePath: string) => {
+/**
+ * Get imported contract source code.
+ *
+ * @param relativePath path within node_modules
+ * @returns file contents for solc
+ */
+export const findImports = (relativePath: string) => {
   const absolutePath = path.resolve(
     process.cwd(),
     "node_modules",
     relativePath
   );
-  const source = fs.readFileSync(absolutePath, "utf8");
+
+  const source = fs.readFileSync(absolutePath, "utf-8");
+
   return { contents: source };
 };
 
+/**
+ * Compile and deploy an ERC-20 token contract, returning account balances.
+ *
+ * @param deployRequest deployment parameters
+ * @returns native asset and token balances
+ */
 export const deploy = async ({
   name,
   symbol,
   premint,
-  ...txInput
+  assetId,
+  apiKey,
+  account,
 }: DeployRequest) => {
-  const { provider, signer } = await getWeb3Provider(txInput);
+  const { provider, signer } = await getWeb3Provider({
+    assetId,
+    apiKey,
+    account,
+  });
 
   const { solidity, contractName } = getContract({ name, symbol, premint });
 
