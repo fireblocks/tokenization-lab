@@ -1,5 +1,6 @@
 import path from "path";
 import fs from "fs";
+import nodeModules from "node_modules-path";
 import solc from "solc";
 import { ContractFactory, Contract, InterfaceAbi } from "ethers";
 import { DeployRequest } from "~/lib/schemas";
@@ -14,11 +15,9 @@ import { getBalances } from "../helpers/getBalances";
  * @returns file contents for solc
  */
 export const findImports = (relativePath: string) => {
-  const absolutePath = path.resolve(
-    process.cwd(),
-    "node_modules",
-    relativePath
-  );
+  const nodeModulesPath = nodeModules(relativePath);
+
+  const absolutePath = path.resolve(nodeModulesPath, relativePath);
 
   const source = fs.readFileSync(absolutePath, "utf-8");
 
