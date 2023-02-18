@@ -1,6 +1,5 @@
 import path from "path";
 import fs from "fs";
-import nodeModules from "node_modules-path";
 import solc from "solc";
 import { ContractFactory, Contract, InterfaceAbi } from "ethers";
 import { DeployRequest } from "~/lib/schemas";
@@ -8,21 +7,33 @@ import { getContract } from "~/lib/contract";
 import { getWeb3Provider } from "../helpers/web3";
 import { getBalances } from "../helpers/getBalances";
 
-/**
- * Get imported contract source code.
- *
- * @param relativePath path within node_modules
- * @returns file contents for solc
- */
-export const findImports = (relativePath: string) => {
-  const nodeModulesPath = nodeModules();
-
-  const absolutePath = path.resolve(nodeModulesPath, relativePath);
-
-  const source = fs.readFileSync(absolutePath, "utf-8");
-
-  return { contents: source };
-};
+// We must manually specify the OpenZeppelin contract paths for @vercel/nft to include them in production
+const openZeppelinContractPaths = [
+  path.join(
+    process.cwd(),
+    "@openzeppelin",
+    "contracts",
+    "token",
+    "ERC20",
+    "ERC20.sol"
+  ),
+  path.join(
+    process.cwd(),
+    "@openzeppelin",
+    "contracts",
+    "token",
+    "ERC20",
+    "extensions",
+    "ERC20Burnable.sol"
+  ),
+  path.join(
+    process.cwd(),
+    "@openzeppelin",
+    "contracts",
+    "access",
+    "Ownable.sol"
+  ),
+];
 
 /**
  * Compile and deploy an ERC-20 token contract, returning account balances.
@@ -49,12 +60,19 @@ export const deploy = async ({
   const filename = `${contractName}.sol`;
 
   try {
+    const openZeppelinSources = openZeppelinContractPaths.reduce(
+      (sources, contractPath) => ({
+        ...sources,
+        [contractPath]: { content: fs.readFileSync(contractPath, "utf8") },
+      }),
+      {} as Record<string, { content: string }>
+    );
+
     const solcInput = {
       language: "Solidity",
       sources: {
-        [filename]: {
-          content: solidity,
-        },
+        ...openZeppelinSources,
+        [filename]: { content: solidity },
       },
       settings: {
         outputSelection: {
@@ -65,9 +83,7 @@ export const deploy = async ({
       },
     };
 
-    const output = JSON.parse(
-      solc.compile(JSON.stringify(solcInput), { import: findImports })
-    );
+    const output = JSON.parse(solc.compile(JSON.stringify(solcInput)));
 
     const tokenOutput = output.contracts[filename][contractName];
 
@@ -102,10 +118,18 @@ export const deploy = async ({
         token: 0,
       },
       debug: {
-        nodeModules: nodeModules(),
-        cwd: process.cwd(),
-        lsCwd: fs.readdirSync(process.cwd()),
-        lsNodeModules: fs.readdirSync(nodeModules()),
+        lsContracts: fs.readdirSync(
+          path.join(process.cwd(), "node_modules", "@openzeppelin", "contracts")
+        ),
+        exists: fs.existsSync(
+          path.join(
+            process.cwd(),
+            "node_modules",
+            "@openzeppelin",
+            "contracts",
+            "token"
+          )
+        ),
         __dirname,
       },
     };
