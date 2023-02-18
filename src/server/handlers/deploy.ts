@@ -15,7 +15,7 @@ import { getBalances } from "../helpers/getBalances";
  * @returns file contents for solc
  */
 export const findImports = (relativePath: string) => {
-  const nodeModulesPath = nodeModules(relativePath);
+  const nodeModulesPath = nodeModules();
 
   const absolutePath = path.resolve(nodeModulesPath, relativePath);
 
@@ -64,31 +64,45 @@ export const deploy = async ({
     },
   };
 
-  const output = JSON.parse(
-    solc.compile(JSON.stringify(solcInput), { import: findImports })
-  );
+  // const output = JSON.parse(
+  //   solc.compile(JSON.stringify(solcInput), { import: findImports })
+  // );
 
-  const tokenOutput = output.contracts[filename][contractName];
+  // const tokenOutput = output.contracts[filename][contractName];
 
-  const abi = tokenOutput.abi as InterfaceAbi;
+  // const abi = tokenOutput.abi as InterfaceAbi;
 
-  const bytecode = tokenOutput.evm.bytecode.object as string;
+  // const bytecode = tokenOutput.evm.bytecode.object as string;
 
-  const factory = new ContractFactory(abi, bytecode, signer);
+  // const factory = new ContractFactory(abi, bytecode, signer);
 
-  const contract = await factory.deploy();
+  // const contract = await factory.deploy();
 
-  await contract.waitForDeployment();
+  // await contract.waitForDeployment();
 
-  const contractAddress = contract.target;
+  // const contractAddress = contract.target;
 
-  const _contract = new Contract(contractAddress as string, abi, signer);
+  // const _contract = new Contract(contractAddress as string, abi, signer);
 
-  const balances = await getBalances(provider, _contract, signer.address);
+  // const balances = await getBalances(provider, _contract, signer.address);
 
   return {
-    contractAddress,
-    abi,
-    balances,
+    // contractAddress,
+    // abi,
+    // balances,
+    contractAddress: "",
+    abi: [],
+    balances: {
+      native: 0,
+      token: 0,
+    },
+    debug: {
+      solcInput,
+      nodeModules: nodeModules(),
+      cwd: process.cwd(),
+      lsCwd: fs.readdirSync(process.cwd()),
+      lsNodeModules: fs.readdirSync(nodeModules()),
+      __dirname,
+    },
   };
 };
