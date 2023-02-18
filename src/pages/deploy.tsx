@@ -28,7 +28,7 @@ const Deploy = () => {
     assetExplorer,
     apiKey,
     account,
-    contract: contractInfo,
+    contract,
     setAccount,
     setContract,
   } = useGlobalContext();
@@ -39,8 +39,8 @@ const Deploy = () => {
     assetId,
     apiKey,
     account,
-    name: contractInfo?.name || "MyToken",
-    symbol: contractInfo?.symbol || "MTK",
+    name: contract?.name || "MyToken",
+    symbol: contract?.symbol || "MTK",
     premint: 1000000,
   };
 
@@ -63,6 +63,8 @@ const Deploy = () => {
   }, [isDirty, assetId, apiKey, account]);
 
   const { name, symbol, premint } = watch();
+
+  const solidity = getContract({ name, symbol, premint });
 
   const deployMutation = trpc.deploy.useMutation({
     onMutate: ({ name }) =>
@@ -112,8 +114,6 @@ const Deploy = () => {
         icon: XCircleIcon,
       }),
   });
-
-  const contract = getContract({ name, symbol, premint });
 
   const onSubmit = (formData: DeployRequest) => deployMutation.mutate(formData);
 
@@ -174,7 +174,7 @@ const Deploy = () => {
         <textarea
           name="contract"
           id="contract"
-          value={contract}
+          value={solidity}
           readOnly
           className="mt-1 block h-80 w-full rounded-md border border-gray-300 py-2 px-3 font-mono shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
         />

@@ -13,5 +13,5 @@ export const getContract = ({ name, symbol, premint }: BuildContract) =>
     access: "ownable",
     burnable: true,
     mintable: true,
-    premint: premint ? premint.toFixed() : undefined,
+    premint: premint ? String(premint) : undefined,
   });
