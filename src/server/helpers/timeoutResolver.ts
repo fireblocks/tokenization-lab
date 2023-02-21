@@ -3,13 +3,14 @@ import { DefaultValue } from "@trpc/server/src/core/internals/utils";
 
 const TIMEOUT = 59000; // ms
 
-let timeout = new Promise<never>((resolve, reject) => {
-  let timeoutId = setTimeout(() => {
-    clearTimeout(timeoutId);
+const timeout = () =>
+  new Promise<never>((resolve, reject) => {
+    let timeoutId = setTimeout(() => {
+      clearTimeout(timeoutId);
 
-    reject(`Timed out in ${TIMEOUT / 1000} seconds`);
-  }, TIMEOUT);
-});
+      reject(`Timed out in ${TIMEOUT / 1000} seconds`);
+    }, TIMEOUT);
+  });
 
 /**
  * Generic resolver wrapper that forwards the resolver input and times out after TIMEOUT milliseconds.
@@ -29,4 +30,4 @@ export const timeoutResolver =
     ) => MaybePromise<DefaultValue<TParams["_output_in"], $Output>>
   ) =>
   async (opts: Opts) =>
-    Promise.race([resolver(opts.input), timeout]);
+    Promise.race([resolver(opts.input), timeout()]);
