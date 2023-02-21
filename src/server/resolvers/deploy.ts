@@ -5,7 +5,13 @@ import { getContract } from "~/lib/contract";
 import { getWeb3Provider } from "../helpers/web3";
 import { getBalances } from "../helpers/getBalances";
 import Context from "@openzeppelin/contracts/utils/Context.sol";
-import Ownable from "@openzeppelin/contracts/access/Ownable.sol";
+import Strings from "@openzeppelin/contracts/utils/Strings.sol";
+import ERC165 from "@openzeppelin/contracts/utils/introspection/ERC165.sol";
+import IERC165 from "@openzeppelin/contracts/utils/introspection/IERC165.sol";
+import MathContract from "@openzeppelin/contracts/utils/math/Math.sol";
+import AccessControl from "@openzeppelin/contracts/access/AccessControl.sol";
+import IAccessControl from "@openzeppelin/contracts/access/IAccessControl.sol";
+import Pausable from "@openzeppelin/contracts/security/Pausable.sol";
 import IERC20 from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import IERC20Metadata from "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 import ERC20 from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
@@ -40,7 +46,25 @@ export const deploy = async ({
     sources: {
       [FILENAME]: { content: solidity },
       "@openzeppelin/contracts/utils/Context.sol": { content: Context },
-      "@openzeppelin/contracts/access/Ownable.sol": { content: Ownable },
+      "@openzeppelin/contracts/utils/Strings.sol": { content: Strings },
+      "@openzeppelin/contracts/utils/introspection/ERC165.sol": {
+        content: ERC165,
+      },
+      "@openzeppelin/contracts/utils/introspection/IERC165.sol": {
+        content: IERC165,
+      },
+      "@openzeppelin/contracts/utils/math/Math.sol": {
+        content: MathContract,
+      },
+      "@openzeppelin/contracts/access/AccessControl.sol": {
+        content: AccessControl,
+      },
+      "@openzeppelin/contracts/access/IAccessControl.sol": {
+        content: IAccessControl,
+      },
+      "@openzeppelin/contracts/security/Pausable.sol": {
+        content: Pausable,
+      },
       "@openzeppelin/contracts/token/ERC20/IERC20.sol": { content: IERC20 },
       "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol": {
         content: IERC20Metadata,

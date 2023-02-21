@@ -10,8 +10,9 @@ export const getContract = ({ name, symbol, premint }: BuildContract) =>
   erc20.print({
     name,
     symbol,
-    access: "ownable",
+    access: "roles",
     burnable: true,
     mintable: true,
+    pausable: true,
     premint: premint ? String(premint) : undefined,
   });
