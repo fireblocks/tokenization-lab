@@ -59,7 +59,7 @@ export type AddressRequest = z.infer<typeof addressRequestSchema>;
 // Deployed token contract
 
 const deployedContractSchema = z.object({
-  address: z.string().trim().min(1, "Contract address is required"),
+  address: addressSchema,
   abi: z.any().array(),
 });
 
@@ -110,18 +110,14 @@ export type DeployRequest = z.infer<typeof deployRequestSchema>;
 
 // Mint & burn token
 
-const deployedContractRequestSchema = transactionRequestSchema.merge(
-  z.object({ contract: deployedContractSchema })
+const contractCallRequestSchema = transactionRequestSchema.merge(
+  z.object({ contract: deployedContractSchema, amount: amountSchema })
 );
 
-export const mintRequestSchema = deployedContractRequestSchema.merge(
-  z.object({ amount: amountSchema })
-);
+export const mintRequestSchema = contractCallRequestSchema;
 
 export type MintRequest = z.infer<typeof mintRequestSchema>;
 
-export const burnRequestSchema = deployedContractRequestSchema.merge(
-  z.object({ amount: amountSchema })
-);
+export const burnRequestSchema = contractCallRequestSchema;
 
 export type BurnRequest = z.infer<typeof burnRequestSchema>;

@@ -11,7 +11,11 @@ export const apiKeySchema = z
     "Invalid API key"
   );
 
-export const addressSchema = z.string().trim().min(1, "Address is required");
+export const addressSchema = z
+  .string()
+  .trim()
+  .min(1, "Address is required")
+  .regex(/^0x[a-fA-F0-9]{40}$/, "Invalid address");
 
 export const accountIdSchema = z
   .number()
