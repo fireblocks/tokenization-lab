@@ -1,14 +1,18 @@
+import { useRouter } from "next/router";
 import {
   createContext,
   useContext,
+  useRef,
   useState,
+  useEffect,
   ReactNode,
-  ForwardRefExoticComponent,
-  SVGProps,
   ButtonHTMLAttributes,
   AnchorHTMLAttributes,
 } from "react";
-import { NOTIFICATION_EXIT_MS } from "~/components/Notification";
+import {
+  NOTIFICATION_EXIT_MS,
+  NotificationType,
+} from "~/components/Notification";
 
 type ActionBaseProps = {
   key: string;
@@ -27,9 +31,7 @@ export type ActionProps = ActionBaseProps & (HTMLAnchorProps | HTMLButtonProps);
 
 type NotificationProps = {
   isVisible: boolean;
-  icon?: ForwardRefExoticComponent<
-    SVGProps<SVGSVGElement> & { title?: string; titleId?: string }
-  >;
+  type?: NotificationType;
   title?: string;
   description?: string;
   actions?: ActionProps[];
@@ -56,6 +58,10 @@ type Props = {
 };
 
 export const NotificationProvider = ({ children }: Props) => {
+  const router = useRouter();
+
+  const initialPathnameRef = useRef(router.pathname);
+
   const [props, setProps] = useState<NotificationProps>(defaultValue.props);
 
   const onOpen = (_props: Omit<NotificationProps, "isVisible">) =>
@@ -66,6 +72,14 @@ export const NotificationProvider = ({ children }: Props) => {
 
     setTimeout(() => setProps(defaultValue.props), NOTIFICATION_EXIT_MS);
   };
+
+  useEffect(() => {
+    if (initialPathnameRef.current !== router.pathname) {
+      onClose();
+    }
+
+    initialPathnameRef.current = router.pathname;
+  }, [router.pathname]);
 
   const value: INotification = {
     props,

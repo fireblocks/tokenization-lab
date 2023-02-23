@@ -5,12 +5,7 @@ import { useState, useMemo, useEffect } from "react";
 import { clsx } from "clsx";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  ArrowPathIcon,
-  CheckCircleIcon,
-  XCircleIcon,
-  RocketLaunchIcon,
-} from "@heroicons/react/24/outline";
+import { RocketLaunchIcon } from "@heroicons/react/24/outline";
 import { authRequestSchema, AuthRequest } from "~/lib/schemas";
 import { trpc } from "~/lib/trpc";
 import { useGlobalContext } from "~/context/Global";
@@ -71,8 +66,8 @@ const Index = ({ hasApiPrivateKey }: Props) => {
       setTmpApiKey(apiKey);
 
       onOpenNotification({
-        title: `Logging in to Fireblocks API`,
-        icon: ArrowPathIcon,
+        title: "Logging in to Fireblocks API",
+        type: "loading",
       });
     },
     onSuccess: (_assets, { apiKey }) => {
@@ -85,17 +80,17 @@ const Index = ({ hasApiPrivateKey }: Props) => {
       setApiKey(apiKey);
 
       onOpenNotification({
-        title: `Fetching vault accounts`,
-        icon: ArrowPathIcon,
+        title: "Fetching vault accounts",
+        type: "loading",
       });
     },
     onError: (error) => {
       resetWalletData();
 
       onOpenNotification({
-        title: `Failed to log in to Fireblocks`,
+        title: "Failed to log in to Fireblocks",
         description: error.message,
-        icon: XCircleIcon,
+        type: "error",
       });
     },
   });
@@ -131,17 +126,17 @@ const Index = ({ hasApiPrivateKey }: Props) => {
         setTmpAccountId(parseInt(_accounts[0].id));
 
         onOpenNotification({
-          title: `Fetching address`,
-          icon: ArrowPathIcon,
+          title: "Fetching address",
+          type: "loading",
         });
       },
       onError: (error) => {
         resetWalletData();
 
         onOpenNotification({
-          title: `Failed to get vault accounts`,
+          title: "Failed to get vault accounts",
           description: error.message,
-          icon: XCircleIcon,
+          type: "error",
         });
       },
     }
@@ -202,18 +197,14 @@ const Index = ({ hasApiPrivateKey }: Props) => {
         onOpenNotification({
           title: "Logged into Fireblocks API",
           description: `Selected network "${assetName}" with vault account "${selectedAccount.name}"`,
-          icon: CheckCircleIcon,
+          type: "success",
           actions: [
             {
               key: "deploy",
               primary: true,
               children: "Deploy a Token",
               isLink: false,
-              onClick: () => {
-                router.push("/deploy");
-
-                onCloseNotification();
-              },
+              onClick: () => router.push("/deploy"),
             },
           ],
         });
@@ -224,7 +215,7 @@ const Index = ({ hasApiPrivateKey }: Props) => {
         onOpenNotification({
           title: "Failed to get vault account deposit address",
           description: error.message,
-          icon: XCircleIcon,
+          type: "error",
         });
       },
     }
@@ -364,7 +355,6 @@ const Index = ({ hasApiPrivateKey }: Props) => {
       <div className="flex justify-center py-3">
         <Link
           href="/deploy"
-          onClick={onCloseNotification}
           className={clsx(
             "text-md inline-flex justify-center rounded-md border border-transparent bg-blue-600 py-3 px-5 font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2",
             (assetsMutation.isLoading ||

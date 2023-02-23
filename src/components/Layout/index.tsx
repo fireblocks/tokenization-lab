@@ -8,7 +8,6 @@ import {
   FireIcon,
 } from "@heroicons/react/24/outline";
 import { useGlobalContext } from "~/context/Global";
-import { useNotification } from "~/context/Notification";
 import { Notification } from "~/components/Notification";
 import { getAsset } from "~/lib/assets";
 
@@ -20,8 +19,6 @@ export const Layout = ({ children }: Props) => {
   const { pathname } = useRouter();
 
   const { apiKey, assetId, assetName, account, contract } = useGlobalContext();
-
-  const { onClose: onCloseNotification } = useNotification();
 
   const isLoggedIn = !!(assetName && apiKey && account);
 
@@ -142,7 +139,6 @@ export const Layout = ({ children }: Props) => {
                 <Link
                   href="/"
                   className="inline-flex items-center rounded border border-gray-300 bg-white px-2.5 py-1.5 text-xs font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                  onClick={onCloseNotification}
                 >
                   Edit
                 </Link>
@@ -162,7 +158,6 @@ export const Layout = ({ children }: Props) => {
                   item.disabled && "pointer-events-none opacity-50"
                 )}
                 aria-current={item.current ? "page" : undefined}
-                onClick={item.disabled ? undefined : onCloseNotification}
               >
                 <item.icon
                   className={clsx(

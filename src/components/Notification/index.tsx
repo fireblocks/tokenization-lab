@@ -1,16 +1,40 @@
 import { AnchorHTMLAttributes, ButtonHTMLAttributes, Fragment } from "react";
 import { clsx } from "clsx";
 import { Transition } from "@headlessui/react";
-import { XMarkIcon } from "@heroicons/react/20/solid";
+import {
+  ArrowPathIcon,
+  CheckCircleIcon,
+  XCircleIcon,
+  XMarkIcon,
+} from "@heroicons/react/20/solid";
 import { useNotification } from "~/context/Notification";
 
 export const NOTIFICATION_EXIT_MS = 100;
 
+export type NotificationType = "loading" | "success" | "error";
+
+const getIcon = (type?: NotificationType) => {
+  switch (type) {
+    case "loading":
+      return ArrowPathIcon;
+    case "success":
+      return CheckCircleIcon;
+    case "error":
+      return XCircleIcon;
+    default:
+      return undefined;
+  }
+};
+
 export const Notification = () => {
   const {
-    props: { isVisible, icon: Icon, title, description, actions },
+    props: { isVisible, type, title, description, actions },
     onClose,
   } = useNotification();
+
+  const Icon = getIcon(type);
+
+  const textHue = type === "error" ? "red" : "gray";
 
   return (
     <>
@@ -29,25 +53,41 @@ export const Notification = () => {
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <div className="pointer-events-auto w-full max-w-sm overflow-hidden rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5">
+            <div
+              className={clsx(
+                "pointer-events-auto w-full max-w-sm overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5",
+                type === "error" ? "bg-red-50" : "bg-white"
+              )}
+            >
               <div className="p-4">
                 <div className="flex items-start">
                   {!!Icon && (
                     <div className="flex-shrink-0">
                       <Icon
-                        className="h-6 w-6 text-gray-400"
+                        className={clsx(
+                          "h-6 w-6",
+                          type === "error" ? "text-red-400" : "text-blue-500",
+                          type === "loading" && "animate-spin"
+                        )}
                         aria-hidden="true"
                       />
                     </div>
                   )}
                   <div className="ml-3 w-0 flex-1 pt-0.5">
                     {!!title && (
-                      <p className="text-sm font-medium text-gray-900">
+                      <p
+                        className={clsx(
+                          "text-sm font-medium",
+                          `text-${textHue}-900`
+                        )}
+                      >
                         {title}
                       </p>
                     )}
                     {!!description && (
-                      <p className="mt-1 text-sm text-gray-500">
+                      <p
+                        className={clsx("mt-1 text-sm", `text-${textHue}-500`)}
+                      >
                         {description}
                       </p>
                     )}
@@ -57,9 +97,9 @@ export const Notification = () => {
                           const actionProps = {
                             ...action,
                             className: clsx(
-                              "rounded-md bg-white text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2",
+                              "rounded-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2",
                               primary
-                                ? "text-indigo-600 hover:text-indigo-500"
+                                ? "text-blue-600 hover:text-blue-500"
                                 : "text-gray-700 hover:text-gray-500",
                               action.className
                             ),
@@ -88,7 +128,7 @@ export const Notification = () => {
                   <div className="ml-4 flex flex-shrink-0">
                     <button
                       type="button"
-                      className="inline-flex rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                      className="inline-flex rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                       onClick={onClose}
                     >
                       <span className="sr-only">Close</span>

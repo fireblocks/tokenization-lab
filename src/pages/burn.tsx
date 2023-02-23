@@ -1,11 +1,6 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  ArrowPathIcon,
-  CheckCircleIcon,
-  XCircleIcon,
-} from "@heroicons/react/24/outline";
 import { burnRequestSchema, BurnRequest, Account } from "~/lib/schemas";
 import { useGlobalContext } from "~/context/Global";
 import { useNotification } from "~/context/Notification";
@@ -33,13 +28,13 @@ const Burn = () => {
       onOpenNotification({
         title: `Burning token "${contract?.name}"`,
         description: `Destroying ${amount} ${contract?.symbol} tokens in account "${account?.name}".`,
-        icon: ArrowPathIcon,
+        type: "loading",
       }),
     onSuccess: ({ hash, balances }, { amount }) => {
       onOpenNotification({
         title: `Burned token "${contract?.name}"`,
         description: `Destroyed ${amount} ${contract?.symbol} tokens in account "${account?.name}".`,
-        icon: CheckCircleIcon,
+        type: "success",
         actions: [
           {
             key: "explorer",
@@ -62,7 +57,7 @@ const Burn = () => {
       onOpenNotification({
         title: `Failed to burn token "${contract?.name}"`,
         description: error.message,
-        icon: XCircleIcon,
+        type: "error",
       }),
   });
 

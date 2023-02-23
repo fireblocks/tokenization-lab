@@ -1,11 +1,6 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  ArrowPathIcon,
-  CheckCircleIcon,
-  XCircleIcon,
-} from "@heroicons/react/24/outline";
 import { mintRequestSchema, MintRequest, Account } from "~/lib/schemas";
 import { useGlobalContext } from "~/context/Global";
 import { useNotification } from "~/context/Notification";
@@ -33,13 +28,13 @@ const Mint = () => {
       onOpenNotification({
         title: `Minting token "${contract?.name}"`,
         description: `Creating ${amount} ${contract?.symbol} tokens in account "${account?.name}".`,
-        icon: ArrowPathIcon,
+        type: "loading",
       }),
     onSuccess: ({ hash, balances }, { amount }) => {
       onOpenNotification({
         title: `Minted token "${contract?.name}"`,
         description: `Created ${amount} ${contract?.symbol} tokens in account "${account?.name}".`,
-        icon: CheckCircleIcon,
+        type: "success",
         actions: [
           {
             key: "explorer",
@@ -62,7 +57,7 @@ const Mint = () => {
       onOpenNotification({
         title: `Failed to mint token "${contract?.name}"`,
         description: error.message,
-        icon: XCircleIcon,
+        type: "error",
       }),
   });
 

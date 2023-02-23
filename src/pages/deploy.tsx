@@ -1,11 +1,6 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  ArrowPathIcon,
-  CheckCircleIcon,
-  XCircleIcon,
-} from "@heroicons/react/24/outline";
 import { deployRequestSchema, DeployRequest, Account } from "~/lib/schemas";
 import { trpc } from "~/lib/trpc";
 import { getContract } from "~/lib/contract";
@@ -71,7 +66,7 @@ const Deploy = () => {
       onOpenNotification({
         title: `Deploying token "${name}"`,
         description: `On ${assetName}`,
-        icon: ArrowPathIcon,
+        type: "loading",
       }),
     onSuccess: ({ abi, contractAddress, balances }, { name, symbol }) => {
       onOpenNotification({
@@ -81,7 +76,7 @@ const Deploy = () => {
             ? `. Balance: ${balances.token.toFixed(4)} ${symbol}`
             : ``
         }`,
-        icon: CheckCircleIcon,
+        type: "success",
         actions: [
           {
             key: "explorer",
@@ -111,7 +106,7 @@ const Deploy = () => {
       onOpenNotification({
         title: `Failed to deploy token "${name}"`,
         description: error.message,
-        icon: XCircleIcon,
+        type: "error",
       }),
   });
 
