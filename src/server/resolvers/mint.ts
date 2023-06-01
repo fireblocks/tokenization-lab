@@ -1,7 +1,8 @@
-import { parseEther, Contract, ContractTransactionResponse } from "ethers";
+import { Contract, ContractTransactionResponse, parseEther } from "ethers";
+
 import { MintRequest } from "~/lib/schemas";
-import { getWeb3Provider } from "../helpers/web3";
 import { getBalances } from "../helpers/getBalances";
+import { getWeb3Provider } from "../helpers/web3";
 
 export const mint = async ({
   contract: contractInfo,
@@ -16,7 +17,7 @@ export const mint = async ({
 
   const tx = (await contract.mint(
     txInput.account.address,
-    wei
+    wei,
   )) as ContractTransactionResponse;
 
   await tx.wait();

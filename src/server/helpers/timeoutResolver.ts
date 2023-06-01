@@ -1,4 +1,4 @@
-import { ProcedureBuilder, ProcedureParams, MaybePromise } from "@trpc/server";
+import { MaybePromise, ProcedureBuilder, ProcedureParams } from "@trpc/server";
 import { DefaultValue } from "@trpc/server/src/core/internals/utils";
 
 const TIMEOUT = 59000; // ms
@@ -23,11 +23,11 @@ export const timeoutResolver =
     TParams extends ProcedureParams,
     Procedure extends Parameters<ProcedureBuilder<TParams>["query"]>[0],
     Opts extends Parameters<Procedure>[0],
-    $Output
+    $Output,
   >(
     resolver: (
-      input: Opts["input"]
-    ) => MaybePromise<DefaultValue<TParams["_output_in"], $Output>>
+      input: Opts["input"],
+    ) => MaybePromise<DefaultValue<TParams["_output_in"], $Output>>,
   ) =>
   async (opts: Opts) =>
     Promise.race([resolver(opts.input), timeout()]);

@@ -1,6 +1,6 @@
-import { useId, HTMLAttributes, InputHTMLAttributes } from "react";
-import { clsx } from "clsx";
+import { HTMLAttributes, InputHTMLAttributes, useId } from "react";
 import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
+import { clsx } from "clsx";
 
 type Props = HTMLAttributes<HTMLDivElement> & {
   label: string;
@@ -39,7 +39,7 @@ export const Select = ({
               hasError
                 ? "border-red-300 text-red-900 placeholder-red-300 focus:border-red-500 focus:ring-red-500"
                 : "border-gray-300 focus:border-blue-500 focus:ring-blue-500",
-              inputProps?.className
+              inputProps?.className,
             )}
             aria-invalid={hasError}
             aria-describedby={hasError ? errorId : undefined}

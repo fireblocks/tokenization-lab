@@ -1,8 +1,11 @@
 import type { AppType } from "next/app";
 import Head from "next/head";
 import { Analytics } from "@vercel/analytics/react";
+
 import { trpc } from "~/lib/trpc";
+
 import "~/styles/global.css";
+
 import { GlobalContextProvider } from "~/context/Global";
 import { NotificationProvider } from "~/context/Notification";
 import { Layout } from "~/components/Layout";

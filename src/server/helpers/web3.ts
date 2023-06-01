@@ -1,7 +1,8 @@
-import { BrowserProvider } from "ethers";
 import { FireblocksWeb3Provider } from "@fireblocks/fireblocks-web3-provider";
-import { TransactionRequest } from "~/lib/schemas";
+import { BrowserProvider } from "ethers";
+
 import { getAsset } from "~/lib/assets";
+import { TransactionRequest } from "~/lib/schemas";
 import { getApiPrivateKey } from "./apiPrivateKey";
 
 export const getWeb3Provider = async ({

@@ -1,21 +1,22 @@
-import solc from "solc";
-import { ContractFactory, Contract, InterfaceAbi } from "ethers";
-import { DeployRequest } from "~/lib/schemas";
-import { getContract } from "~/lib/contract";
-import { getWeb3Provider } from "../helpers/web3";
-import { getBalances } from "../helpers/getBalances";
-import Context from "@openzeppelin/contracts/utils/Context.sol";
-import Strings from "@openzeppelin/contracts/utils/Strings.sol";
-import ERC165 from "@openzeppelin/contracts/utils/introspection/ERC165.sol";
-import IERC165 from "@openzeppelin/contracts/utils/introspection/IERC165.sol";
-import MathContract from "@openzeppelin/contracts/utils/math/Math.sol";
 import AccessControl from "@openzeppelin/contracts/access/AccessControl.sol";
 import IAccessControl from "@openzeppelin/contracts/access/IAccessControl.sol";
 import Pausable from "@openzeppelin/contracts/security/Pausable.sol";
-import IERC20 from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import IERC20Metadata from "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 import ERC20 from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import ERC20Burnable from "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
+import IERC20Metadata from "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
+import IERC20 from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import Context from "@openzeppelin/contracts/utils/Context.sol";
+import ERC165 from "@openzeppelin/contracts/utils/introspection/ERC165.sol";
+import IERC165 from "@openzeppelin/contracts/utils/introspection/IERC165.sol";
+import MathContract from "@openzeppelin/contracts/utils/math/Math.sol";
+import Strings from "@openzeppelin/contracts/utils/Strings.sol";
+import { Contract, ContractFactory, InterfaceAbi } from "ethers";
+import solc from "solc";
+
+import { getContract } from "~/lib/contract";
+import { DeployRequest } from "~/lib/schemas";
+import { getBalances } from "../helpers/getBalances";
+import { getWeb3Provider } from "../helpers/web3";
 
 const FILENAME = "Token.sol";
 

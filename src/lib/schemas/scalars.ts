@@ -1,4 +1,5 @@
 import { z } from "zod";
+
 import { assetIds } from "../assets";
 
 export const assetIdSchema = z.enum(assetIds);
@@ -8,7 +9,7 @@ export const apiKeySchema = z
   .trim()
   .regex(
     /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/,
-    "Invalid API key"
+    "Invalid API key",
   );
 
 export const addressSchema = z

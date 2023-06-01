@@ -1,6 +1,6 @@
-import { useId, HTMLAttributes, InputHTMLAttributes } from "react";
-import { clsx } from "clsx";
+import { HTMLAttributes, InputHTMLAttributes, useId } from "react";
 import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
+import { clsx } from "clsx";
 
 type Props = HTMLAttributes<HTMLDivElement> & {
   label: string;
@@ -22,8 +22,8 @@ export const Input = ({ label, error, inputProps, ...props }: Props) => {
       >
         {label}
       </label>
-      <div className="flex mt-1 rounded-md shadow-sm">
-        <div className="flex relative flex-grow items-stretch focus-within:z-10">
+      <div className="mt-1 flex rounded-md shadow-sm">
+        <div className="relative flex flex-grow items-stretch focus-within:z-10">
           <input
             {...inputProps}
             id={inputId}
@@ -32,7 +32,7 @@ export const Input = ({ label, error, inputProps, ...props }: Props) => {
               hasError
                 ? "border-red-300 text-red-900 placeholder-red-300 focus:border-red-500 focus:ring-red-500"
                 : "border-gray-300 focus:border-blue-500 focus:ring-blue-500",
-              inputProps?.className
+              inputProps?.className,
             )}
             autoComplete="off"
             autoCorrect="off"
@@ -40,7 +40,7 @@ export const Input = ({ label, error, inputProps, ...props }: Props) => {
             aria-describedby={hasError ? errorId : undefined}
           />
           {hasError && (
-            <div className="flex pointer-events-none absolute inset-y-0 right-0 items-center pr-3">
+            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
               <ExclamationCircleIcon
                 className="h-5 w-5 text-red-500"
                 aria-hidden="true"

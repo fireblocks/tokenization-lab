@@ -1,4 +1,5 @@
 import { FireblocksSDK } from "fireblocks-sdk";
+
 import { getApiPrivateKey } from "./apiPrivateKey";
 
 export const getFireblocks = async (apiKey: string) => {

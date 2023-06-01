@@ -10,7 +10,7 @@ export const getPermanentAddress = async ({
 
   const addresses = await fireblocks.getDepositAddresses(
     String(accountId),
-    assetId
+    assetId,
   );
 
   const permanentAddress =

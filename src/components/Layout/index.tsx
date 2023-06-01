@@ -1,15 +1,16 @@
-import { useRouter } from "next/router";
-import { ReactNode, ForwardRefExoticComponent, SVGProps } from "react";
-import { clsx } from "clsx";
+import { ForwardRefExoticComponent, ReactNode, SVGProps } from "react";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import {
-  RocketLaunchIcon,
-  PlusCircleIcon,
   FireIcon,
+  PlusCircleIcon,
+  RocketLaunchIcon,
 } from "@heroicons/react/24/outline";
+import { clsx } from "clsx";
+
+import { getAsset } from "~/lib/assets";
 import { useGlobalContext } from "~/context/Global";
 import { Notification } from "~/components/Notification";
-import { getAsset } from "~/lib/assets";
 
 type Props = {
   children: ReactNode;
@@ -47,7 +48,7 @@ export const Layout = ({ children }: Props) => {
   const navItem = (
     name: string,
     icon: typeof RocketLaunchIcon,
-    disabled = !isLoggedIn
+    disabled = !isLoggedIn,
   ) => {
     const href = `/${name.toLowerCase()}`;
 
@@ -153,7 +154,7 @@ export const Layout = ({ children }: Props) => {
                     ? "bg-white text-blue-700 hover:bg-white hover:text-blue-700"
                     : "text-gray-900 hover:bg-gray-50 hover:text-gray-900",
                   "group flex items-center rounded-md px-3 py-2 text-sm font-medium",
-                  item.disabled && "pointer-events-none opacity-50"
+                  item.disabled && "pointer-events-none opacity-50",
                 )}
                 aria-current={item.current ? "page" : undefined}
               >
@@ -162,7 +163,7 @@ export const Layout = ({ children }: Props) => {
                     item.current
                       ? "text-blue-500 group-hover:text-blue-500"
                       : "text-gray-400 group-hover:text-gray-500",
-                    "-ml-1 mr-3 h-6 w-6 flex-shrink-0"
+                    "-ml-1 mr-3 h-6 w-6 flex-shrink-0",
                   )}
                   aria-hidden="true"
                 />

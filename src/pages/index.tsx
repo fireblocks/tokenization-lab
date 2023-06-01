@@ -1,20 +1,21 @@
+import { useEffect, useMemo, useState } from "react";
 import { GetStaticProps } from "next";
-import { useRouter } from "next/router";
 import Link from "next/link";
-import { useState, useMemo, useEffect } from "react";
+import { useRouter } from "next/router";
+import { RocketLaunchIcon } from "@heroicons/react/24/outline";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { clsx } from "clsx";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { RocketLaunchIcon } from "@heroicons/react/24/outline";
-import { authRequestSchema, AuthRequest } from "~/lib/schemas";
+
+import { getApiPrivateKey } from "~/server/helpers/apiPrivateKey";
+import { AssetId, defaultAsset, getAsset } from "~/lib/assets";
+import { AuthRequest, authRequestSchema } from "~/lib/schemas";
 import { trpc } from "~/lib/trpc";
 import { useGlobalContext } from "~/context/Global";
 import { useNotification } from "~/context/Notification";
 import { Form } from "~/components/Form";
 import { Input } from "~/components/Input";
 import { Select } from "~/components/Select";
-import { AssetId, defaultAsset, getAsset } from "~/lib/assets";
-import { getApiPrivateKey } from "~/server/helpers/apiPrivateKey";
 
 type Props = {
   hasApiPrivateKey: boolean;
@@ -139,7 +140,7 @@ const Index = ({ hasApiPrivateKey }: Props) => {
           type: "error",
         });
       },
-    }
+    },
   );
 
   const accountsForAsset = accountsForAssetQuery.data;
@@ -174,11 +175,11 @@ const Index = ({ hasApiPrivateKey }: Props) => {
         !accountsForAssetQuery.isLoading,
       onSuccess: (address) => {
         const selectedAsset = assetsMutation.data?.find(
-          (a) => a.id === assetId
+          (a) => a.id === assetId,
         );
 
         const selectedAccount = accountsForAsset?.find(
-          (a) => parseInt(a.id) === tmpAccountId
+          (a) => parseInt(a.id) === tmpAccountId,
         );
 
         if (!selectedAsset || !selectedAccount) {
@@ -218,7 +219,7 @@ const Index = ({ hasApiPrivateKey }: Props) => {
           type: "error",
         });
       },
-    }
+    },
   );
 
   const onClickReset = () => {
@@ -249,7 +250,7 @@ const Index = ({ hasApiPrivateKey }: Props) => {
   if (!hasApiPrivateKey) {
     return (
       <div className="shadow sm:overflow-hidden sm:rounded-md">
-        <div className="h-full space-y-6 bg-white py-6 px-4 sm:p-6">
+        <div className="h-full space-y-6 bg-white px-4 py-6 sm:p-6">
           <div>
             <h3 className="text-lg font-medium leading-6 text-gray-900">
               Fireblocks API Setup
@@ -276,12 +277,12 @@ const Index = ({ hasApiPrivateKey }: Props) => {
         submitLabel="Log In"
         disabled={assetsMutation.isLoading}
         onSubmit={handleSubmit(onSubmitApiKey, (errors) =>
-          console.error(errors)
+          console.error(errors),
         )}
         actions={
           <button
             type="button"
-            className="inline-flex justify-center rounded-md border border-red-300 bg-white py-2 px-4 text-sm font-medium text-red-700 shadow-sm hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+            className="inline-flex justify-center rounded-md border border-red-300 bg-white px-4 py-2 text-sm font-medium text-red-700 shadow-sm hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
             onClick={onClickReset}
           >
             Reset
@@ -356,11 +357,11 @@ const Index = ({ hasApiPrivateKey }: Props) => {
         <Link
           href="/deploy"
           className={clsx(
-            "text-md inline-flex justify-center rounded-md border border-transparent bg-blue-600 py-3 px-5 font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2",
+            "text-md inline-flex justify-center rounded-md border border-transparent bg-blue-600 px-5 py-3 font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2",
             (assetsMutation.isLoading ||
               accountsForAssetQuery.isLoading ||
               addressQuery.isLoading) &&
-              "pointer-events-none opacity-50"
+              "pointer-events-none opacity-50",
           )}
         >
           <RocketLaunchIcon

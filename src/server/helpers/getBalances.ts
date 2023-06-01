@@ -1,4 +1,4 @@
-import { formatEther, Provider, Contract, BigNumberish } from "ethers";
+import { BigNumberish, Contract, formatEther, Provider } from "ethers";
 
 const formatBalance = (balance: BigNumberish) =>
   parseFloat(formatEther(balance));
@@ -6,7 +6,7 @@ const formatBalance = (balance: BigNumberish) =>
 export const getBalances = async (
   provider: Provider,
   contract: Contract,
-  address: string
+  address: string,
 ) => {
   const tokenBalanceWei = await contract.balanceOf(address);
   const nativeBalanceWei = await provider.getBalance(address);

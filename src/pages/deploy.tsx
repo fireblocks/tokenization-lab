@@ -1,9 +1,10 @@
 import { useEffect } from "react";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { deployRequestSchema, DeployRequest, Account } from "~/lib/schemas";
-import { trpc } from "~/lib/trpc";
+import { useForm } from "react-hook-form";
+
 import { getContract } from "~/lib/contract";
+import { Account, DeployRequest, deployRequestSchema } from "~/lib/schemas";
+import { trpc } from "~/lib/trpc";
 import { useGlobalContext } from "~/context/Global";
 import { useNotification } from "~/context/Notification";
 import { Form } from "~/components/Form";
@@ -171,7 +172,7 @@ const Deploy = () => {
           id="contract"
           value={solidity}
           readOnly
-          className="mt-1 block h-80 w-full rounded-md border border-gray-300 py-2 px-3 font-mono shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
+          className="mt-1 block h-80 w-full rounded-md border border-gray-300 px-3 py-2 font-mono shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
         />
       </div>
     </Form>

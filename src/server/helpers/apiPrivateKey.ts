@@ -1,5 +1,5 @@
-import path from "path";
 import fs from "fs";
+import path from "path";
 
 const PRIVATE_KEY_B64 = process.env.PRIVATE_KEY_B64;
 

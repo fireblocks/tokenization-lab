@@ -1,5 +1,4 @@
 import { AnchorHTMLAttributes, ButtonHTMLAttributes, Fragment } from "react";
-import { clsx } from "clsx";
 import { Transition } from "@headlessui/react";
 import {
   ArrowPathIcon,
@@ -7,6 +6,8 @@ import {
   XCircleIcon,
   XMarkIcon,
 } from "@heroicons/react/20/solid";
+import { clsx } from "clsx";
+
 import { useNotification } from "~/context/Notification";
 
 export const NOTIFICATION_EXIT_MS = 100;
@@ -56,7 +57,7 @@ export const Notification = () => {
             <div
               className={clsx(
                 "pointer-events-auto w-full max-w-sm overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5",
-                type === "error" ? "bg-red-50" : "bg-white"
+                type === "error" ? "bg-red-50" : "bg-white",
               )}
             >
               <div className="p-4">
@@ -67,7 +68,7 @@ export const Notification = () => {
                         className={clsx(
                           "h-6 w-6",
                           type === "error" ? "text-red-400" : "text-blue-500",
-                          type === "loading" && "animate-spin"
+                          type === "loading" && "animate-spin",
                         )}
                         aria-hidden="true"
                       />
@@ -78,7 +79,7 @@ export const Notification = () => {
                       <p
                         className={clsx(
                           "text-sm font-medium",
-                          `text-${textHue}-900`
+                          `text-${textHue}-900`,
                         )}
                       >
                         {title}
@@ -101,7 +102,7 @@ export const Notification = () => {
                               primary
                                 ? "text-blue-600 hover:text-blue-500"
                                 : "text-gray-700 hover:text-gray-500",
-                              action.className
+                              action.className,
                             ),
                           };
 

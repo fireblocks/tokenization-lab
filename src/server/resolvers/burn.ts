@@ -1,7 +1,8 @@
-import { parseEther, Contract, ContractTransactionResponse } from "ethers";
+import { Contract, ContractTransactionResponse, parseEther } from "ethers";
+
 import { BurnRequest } from "~/lib/schemas";
-import { getWeb3Provider } from "../helpers/web3";
 import { getBalances } from "../helpers/getBalances";
+import { getWeb3Provider } from "../helpers/web3";
 
 export const burn = async ({
   contract: contractInfo,

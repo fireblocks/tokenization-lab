@@ -1,18 +1,19 @@
 import {
   createContext,
-  useContext,
-  useState,
-  useEffect,
   ReactNode,
+  useContext,
+  useEffect,
+  useState,
 } from "react";
 import { useRouter } from "next/router";
+
 import { Asset, AssetId, getAsset } from "~/lib/assets";
 import {
   Account,
-  Contract,
-  assetIdSchema,
-  apiKeySchema,
   accountSchema,
+  apiKeySchema,
+  assetIdSchema,
+  Contract,
   contractSchema,
 } from "~/lib/schemas";
 import { Storage } from "./storage";
@@ -81,7 +82,7 @@ export const GlobalContextProvider = ({ children }: Props) => {
   const setStoredState = <T = any,>(
     storage: Storage<T>,
     key: keyof IGlobalContext,
-    value: T
+    value: T,
   ) => {
     storage.set(value);
 

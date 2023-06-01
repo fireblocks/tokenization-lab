@@ -1,10 +1,11 @@
 import { useEffect } from "react";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { mintRequestSchema, MintRequest, Account } from "~/lib/schemas";
+import { useForm } from "react-hook-form";
+
+import { Account, MintRequest, mintRequestSchema } from "~/lib/schemas";
+import { trpc } from "~/lib/trpc";
 import { useGlobalContext } from "~/context/Global";
 import { useNotification } from "~/context/Notification";
-import { trpc } from "~/lib/trpc";
 import { Form } from "~/components/Form";
 import { Input } from "~/components/Input";
 

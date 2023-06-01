@@ -1,20 +1,21 @@
 import { initTRPC } from "@trpc/server";
+
 import { timeoutResolver } from "~/server/helpers/timeoutResolver";
 import {
-  getAssets,
-  getAccountsForAsset,
-  getPermanentAddress,
-  deploy,
-  mint,
   burn,
+  deploy,
+  getAccountsForAsset,
+  getAssets,
+  getPermanentAddress,
+  mint,
 } from "~/server/resolvers";
 import {
-  authRequestSchema,
   accountsForAssetRequestSchema,
   addressRequestSchema,
+  authRequestSchema,
+  burnRequestSchema,
   deployRequestSchema,
   mintRequestSchema,
-  burnRequestSchema,
 } from "~/lib/schemas";
 
 const t = initTRPC.create();
@@ -24,10 +25,10 @@ const input = t.procedure.input;
 export const appRouter = t.router({
   assets: input(authRequestSchema).mutation(timeoutResolver(getAssets)),
   accountsForAsset: input(accountsForAssetRequestSchema).query(
-    timeoutResolver(getAccountsForAsset)
+    timeoutResolver(getAccountsForAsset),
   ),
   getPermanentAddress: input(addressRequestSchema).query(
-    timeoutResolver(getPermanentAddress)
+    timeoutResolver(getPermanentAddress),
   ),
   deploy: input(deployRequestSchema).mutation(timeoutResolver(deploy)),
   mint: t.procedure.input(mintRequestSchema).mutation(timeoutResolver(mint)),
