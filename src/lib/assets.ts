@@ -1,4 +1,4 @@
-import { ChainId } from "@fireblocks/fireblocks-web3-provider";
+import { ChainId } from "@fireblocks/fireblocks-web3-provider/dist/src/types";
 
 export const defaultAsset = {
   id: "MATIC_POLYGON_MUMBAI",

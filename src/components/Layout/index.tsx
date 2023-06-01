@@ -46,9 +46,7 @@ export const Layout = ({ children }: Props) => {
 
   const navItem = (
     name: string,
-    icon: ForwardRefExoticComponent<
-      SVGProps<SVGSVGElement> & { title?: string; titleId?: string }
-    >,
+    icon: typeof RocketLaunchIcon,
     disabled = !isLoggedIn
   ) => {
     const href = `/${name.toLowerCase()}`;
