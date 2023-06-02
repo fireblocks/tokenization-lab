@@ -21,13 +21,12 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-ARG RAILWAY_ENVIRONMENT
-ENV RAILWAY_ENVIRONMENT=$RAILWAY_ENVIRONMENT
+ENV NEXT_TELEMETRY_DISABLED=true
+ENV CI=true
+ENV NODE_ENV=production
 
-# Next.js collects completely anonymous telemetry data about general usage.
-# Learn more here: https://nextjs.org/telemetry
-# Uncomment the following line in case you want to disable telemetry during the build.
-ENV NEXT_TELEMETRY_DISABLED 1
+ARG PRIVATE_KEY_B64
+ENV PRIVATE_KEY_B64=$PRIVATE_KEY_B64
 
 RUN npm run build
 
@@ -38,11 +37,7 @@ RUN npm run build
 FROM base AS runner
 WORKDIR /app
 
-ENV CI 1
-ENV NODE_ENV production
-ENV PRIVATE_KEY_B64 $PRIVATE_KEY_B64
-# Uncomment the following line in case you want to disable telemetry during runtime.
-ENV NEXT_TELEMETRY_DISABLED 1
+ENV NEXT_TELEMETRY_DISABLED=1
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
