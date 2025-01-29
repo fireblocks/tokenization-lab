@@ -24,7 +24,7 @@
     "@trpc/client": "^10.28.2",
     "@trpc/next": "^10.28.2",
     "@trpc/react-query": "^10.28.2",
-    "@trpc/server": "^10.28.2",
+    "@trpc/server": "^10.45.2",
     "@vercel/analytics": "^1.0.1",
     "clsx": "^1.2.1",
     "ethers": "^6.0.8",
