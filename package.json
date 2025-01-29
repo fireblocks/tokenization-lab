@@ -33,7 +33,7 @@
     "next-pwa": "^5.6.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-hook-form": "^7.44.2",
+    "react-hook-form": "^7.54.2",
     "solc": "^0.8.19",
     "zod": "^3.21.4"
   },
