@@ -31,7 +31,7 @@
     "fireblocks-sdk": "^4.2.0",
     "next": "^13.4.4",
     "next-pwa": "^5.6.0",
-    "react": "^18.2.0",
+    "react": "^18.3.1",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.44.2",
     "solc": "^0.8.19",
